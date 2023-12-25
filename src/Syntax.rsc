@@ -17,48 +17,23 @@ syntax Question
   | conditional: "if" "(" Expr ")" Question ("else" Question)?;
 
 syntax Expr 
-  = ExprOr
-  ;
-
-syntax ExprOr 
-  = ExprOr "||" ExprAnd 
-  > ExprAnd
-  ;
-
-syntax ExprAnd 
-  = ExprAnd "&&" ExprEq 
-  > ExprEq
-  ;
-
-syntax ExprEq 
-  = ExprEq ("==" | "!=") ExprRel
-  > ExprRel
-  ;
-
-syntax ExprRel
-  = ExprRel ("\<" | "\>" | "\<=" | "\>=") ExprAdd
-  > ExprAdd
-  ;
-
-syntax ExprAdd 
-  = ExprAdd ("+" | "-") ExprMul 
-  > ExprMul 
-  ;
-
-syntax ExprMul 
-  = ExprMul ("*" | "/") ExprUnary 
-  > ExprUnary
-  ;
-
-syntax ExprUnary 
-  = "!" ExprUnary
-  | ExprPrimary
-  ;
-
-syntax ExprPrimary 
-  = Int | Bool | Str 
-  | Id 
-  | "(" Expr ")"
+  = ident: Identifier
+  | Int num
+  | [()] Expr expr [)]
+  > left (left Expr left Mul Expr right | left Expr left Div Expr right)
+  > left (left Expr left Add Expr right | left Expr left Sub Expr right)
+  > right Excl Expr right
+  > left Expr left And Expr right
+  > left Expr left Orr Expr right
+  > non-assoc
+    (
+      non-assoc Expr left Eqq Expr right
+    | non-assoc Expr left Neq Expr right
+    | non-assoc Expr left Gtn Expr right
+    | non-assoc Expr left Ltn Expr right
+    | non-assoc Expr left Geq Expr right
+    | non-assoc Expr left Leq Expr right
+    )
   ;
 
 syntax Type 
@@ -74,3 +49,63 @@ lexical Int
 
 lexical Bool 
   = "true" | "false";
+
+lexical Identifier
+  = Id \Reserved
+  ;
+
+lexical Mul
+  = "*"
+  ;
+
+lexical Div
+  = "/"
+  ;
+  
+lexical Add
+  = "+"
+  ;
+
+lexical Sub
+  = "-"
+  ;
+
+lexical Excl
+  = "!"
+  ;
+
+lexical And
+  = "&&"
+  ;
+
+lexical Orr
+  = "||"
+  ;
+
+lexical Eqq
+  = "=="
+  ;
+
+lexical Neq
+  = "!="
+  ;
+
+lexical Gtn
+  = "\>"
+  ;
+
+lexical Ltn
+  = "\<"
+  ;
+
+lexical Geq
+  = "\>="
+  ;
+
+lexical Leq
+  = "\<="
+  ;
+
+keyword Reserved
+  = "if" | "else" | "false" | "true"
+  ;
