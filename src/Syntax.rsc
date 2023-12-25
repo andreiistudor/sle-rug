@@ -11,10 +11,9 @@ start syntax Form
   = "form" Id name "{" Question* questions "}"; 
 
 syntax Question 
-  = regular: "question" Id ":" Type 
-  | computed: "question" Id ":" Type "=" Expr 
-  | block: "{" Question* "}" 
-  | conditional: "if" "(" Expr ")" Question ("else" Question)?;
+  = Str string Identifier id_name [:] Type type ([=] Expr expr)?
+  | If  [(] Expr expr [)] [{] Question* questions_left [}] (Else "{" Question* questions_right "}")?
+  ;
 
 syntax Expr 
   = ident: Identifier
@@ -52,6 +51,14 @@ lexical Bool
 
 lexical Identifier
   = Id \Reserved
+  ;
+
+lexical If
+  = "if"
+  ;
+
+lexical Else
+  = "else"
   ;
 
 lexical Mul
