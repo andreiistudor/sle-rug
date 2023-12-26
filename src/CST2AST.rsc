@@ -26,42 +26,43 @@ AQuestion cst2ast(Question q) {
 
 AExpr cst2ast(Expr e) {
   switch (e) {
-    case (Expr)`<Identifier x>`: 
+    case identifier(x): 
       return ref(id(x, src=e.src), src=e.src);
-    case (Expr)`<Int n>`: 
-      return ref(n, src=e.src);
-    case (Expr)`<Expr x> "*" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "/" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "+" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "-" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`"!" <Expr x>`: 
-      return ref(cst2ast(x), src=e.src);
-    case (Expr)`<Expr x> "&&" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "||" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "==" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "!=" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "\>" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "\<" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "\>=" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`<Expr x> "\<=" <Expr y>`: 
-      return ref(cst2ast(x), cst2ast(y), src=e.src);
-    case (Expr)`("(" <Expr x> ")")`: 
+    case integer(n): 
+      return integer(n, src=e.src);
+    case mul(x, y): 
+      return mul(cst2ast(x), cst2ast(y), src=e.src);
+    case div(x, y): 
+      return div(cst2ast(x), cst2ast(y), src=e.src);
+    case add(x, y): 
+      return add(cst2ast(x), cst2ast(y), src=e.src);
+    case sub(x, y): 
+      return sub(cst2ast(x), cst2ast(y), src=e.src);
+    case not(x): 
+      return not(cst2ast(x), src=e.src);
+    case and(x, y): 
+      return and(cst2ast(x), cst2ast(y), src=e.src);
+    case orr(x, y): 
+      return orr(cst2ast(x), cst2ast(y), src=e.src);
+    case eq(x, y): 
+      return eq(cst2ast(x), cst2ast(y), src=e.src);
+    case neq(x, y): 
+      return neq(cst2ast(x), cst2ast(y), src=e.src);
+    case gtn(x, y): 
+      return gtn(cst2ast(x), cst2ast(y), src=e.src);
+    case ltn(x, y): 
+      return ltn(cst2ast(x), cst2ast(y), src=e.src);
+    case geq(x, y): 
+      return geq(cst2ast(x), cst2ast(y), src=e.src);
+    case leq(x, y): 
+      return leq(cst2ast(x), cst2ast(y), src=e.src);
+    case parens(x): 
       return cst2ast(x);
     default:
       throw "Unhandled expression: <e>";
   }
 }
+
 
 AType cst2ast(Type t) {
   switch (t) {
