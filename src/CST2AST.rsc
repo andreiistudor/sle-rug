@@ -18,15 +18,19 @@ import ParseTree;
 AForm cst2ast(start[Form] sf) {
   Form f = sf.top; // remove layout before and after form
   list[AQuestion] questions = [ cst2ast(q) | q <- f.questions ];
-  return form("", [ ], src=f.src); 
+  return form(cst2ast(f.name), questions, src=f.src);
 }
 
 default AQuestion cst2ast(Question q) {
   switch (q) {
-    case (Question)`<Str text> <Id id> : <Type qType>`:
-      return question1(toString(text), id(toString(id), src=id.src), cst2ast(qType), src=q.src);    
-    case (Question)`<Str text> <Id id> : <Type qType> = <Expr qExpr>`:
-      return question2(toString(text), id(toString(id), src=id.src), cst2ast(qType), cst2ast(qExpr), src=q.src);
+    case (Question)`<Str text> <Id identifier> : <Type qType>`:
+      return question1(cst2ast(text), cst2ast(identifier), cst2ast(qType), src=q.src);    
+    case (Question)`<Str text> <Id identifier> : <Type qType> = <Expr qExpr>`:
+      return question2(cst2ast(text), cst2ast(identifier), cst2ast(qType), cst2ast(qExpr), src=q.src);
+    case (Question)`if (<Expr condition>) { <Question* questions> }`:
+      return ifQuestion(cst2ast(condition), [ cst2ast(q) | q <- questions ], src=q.src);
+    case (Question)`if (<Expr condition>) { <Question* questions> } else { <Question* elseQuestions> }`:
+      return ifElseQuestion(cst2ast(condition), [ cst2ast(q) | q <- questions ], [ cst2ast(q) | q <- elseQuestions ], src=q.src);
 
     default:
       throw "Unhandled question: <q>";
@@ -40,6 +44,18 @@ AExpr cst2ast(Expr e) {
     
     default: throw "Unhandled expression: <e>";
   }
+}
+
+default AId cst2ast(Id i) {
+  return id("<i>", src=i.src);
+}
+
+default str cst2ast(Str s) {
+  return "<s>";
+}
+
+default str cst2ast(Id s) {
+  return "<s>";
 }
 
 default AType cst2ast(Type t) {

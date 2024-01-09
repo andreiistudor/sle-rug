@@ -13,8 +13,9 @@ data AForm(loc src = |tmp:///|)
 
 data AQuestion(loc src = |tmp:///|)
   = question1(str text, AId identifier, AType qType)
-  | question2(str text, AId identifier, AType qType, [AExpr] defaultValue)
-  | ifQuestion(AExpr condition, list[AQuestion] questions, list[AQuestion] elseQuestions)
+  | question2(str text, AId identifier, AType qType, AExpr defaultValue)
+  | ifQuestion(AExpr condition, list[AQuestion] questions)
+  | ifElseQuestion(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions)
   ; 
 
 data AExpr(loc src = |tmp:///|)

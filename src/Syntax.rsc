@@ -9,7 +9,8 @@ start syntax Form
 syntax Question
   = Str question Id identifier ":" Type qType
   | Str question Id identifier ":" Type qType "=" Expr defaultValue
-  | "if" "(" Expr condition ")" "{" Question* questions "}" ("else" "{" Question* elseQuestions "}")?
+  | "if" "(" Expr condition ")" "{" Question* questions "}"
+  | "if" "(" Expr condition ")" "{" Question* questions "}" "else" "{" Question* questions "}"
   ;
 
 syntax Expr = LogicalExpr;
