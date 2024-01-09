@@ -22,7 +22,15 @@ AForm cst2ast(start[Form] sf) {
 }
 
 default AQuestion cst2ast(Question q) {
-  throw "Not yet implemented <q>";
+  switch (q) {
+    case (Question)`<Str text> <Id id> : <Type qType>`:
+      return question1(toString(text), id(toString(id), src=id.src), cst2ast(qType), src=q.src);    
+    case (Question)`<Str text> <Id id> : <Type qType> = <Expr qExpr>`:
+      return question2(toString(text), id(toString(id), src=id.src), cst2ast(qType), cst2ast(qExpr), src=q.src);
+
+    default:
+      throw "Unhandled question: <q>";
+  }
 }
 
 AExpr cst2ast(Expr e) {
@@ -36,11 +44,11 @@ AExpr cst2ast(Expr e) {
 
 default AType cst2ast(Type t) {
   switch (t) {
-    case (Type)`"integer"`:
+    case (Type)`integer`:
       return typeInteger(src=t.src);
-    case (Type)`"boolean"`:
+    case (Type)`boolean`:
       return typeBoolean(src=t.src);
-    case (Type)`"string"`:
+    case (Type)`string`:
       return typeString(src=t.src);
 
     default: 

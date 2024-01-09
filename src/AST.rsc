@@ -26,13 +26,14 @@ data AExpr(loc src = |tmp:///|)
   | multiplicative(AExpr left, str operator, AExpr right) // operator is "*" or "/"
   | unary(str operator, AExpr expr) // operator is "!"
   | ref(AId id) // For identifier references
-  | literalInt()
-  | literalBool()
-  | parenExpr(AExpr expr)
+  | literalInt() // For integer literals
+  | literalBool() // For boolean literals
+  | parenExpr(AExpr expr) // For parenthesized expressions
   ;
 
 data AId(loc src = |tmp:///|)
-  = id(str name);
+  = id(str name)
+  ;
 
 data AType(loc src = |tmp:///|)
   = typeInteger()
