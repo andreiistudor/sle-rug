@@ -39,9 +39,7 @@ default AQuestion cst2ast(Question q) {
 
 AExpr cst2ast(Expr e) {
   switch (e) {
-    case (Expr)`<Id x>`: return ref(id("<x>", src=x.src), src=x.src);
-    // etc.
-    
+
     default: throw "Unhandled expression: <e>";
   }
 }

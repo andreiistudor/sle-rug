@@ -13,47 +13,18 @@ syntax Question
   | "if" "(" Expr condition ")" "{" Question* questions "}" "else" "{" Question* questions "}"
   ;
 
-syntax Expr = LogicalExpr;
-
-syntax LogicalExpr
-  = LogicalExpr "||" AndExpr
-  > AndExpr;
-
-syntax AndExpr
-  = AndExpr "&&" EqualityExpr
-  > EqualityExpr;
-
-syntax EqualityExpr
-  = EqualityExpr "==" RelationalExpr
-  | EqualityExpr "!=" RelationalExpr
-  > RelationalExpr;
-
-syntax RelationalExpr
-  = RelationalExpr "\<" AdditiveExpr
-  | RelationalExpr "\>" AdditiveExpr
-  | RelationalExpr "\<=" AdditiveExpr
-  | RelationalExpr "\>=" AdditiveExpr
-  > AdditiveExpr;
-
-syntax AdditiveExpr
-  = AdditiveExpr "+" MultiplicativeExpr
-  | AdditiveExpr "-" MultiplicativeExpr
-  > MultiplicativeExpr;
-
-syntax MultiplicativeExpr
-  = MultiplicativeExpr "*" UnaryExpr
-  | MultiplicativeExpr "/" UnaryExpr
-  > UnaryExpr;
-
-syntax UnaryExpr
-  = "!" UnaryExpr
-  | PrimaryExpr;
-
-syntax PrimaryExpr
-  = Id
-  | Int
-  | Bool
-  | "(" Expr ")"
+syntax Expr
+  = left Expr "||" Expr          // Logical OR, left associative
+  > left Expr "&&" Expr          // Logical AND, left associative
+  > non-assoc Expr ("==" | "!=") Expr  // Equality, non-associative
+  > non-assoc Expr ("\<" | "\>" | "\<=" | "\>=") Expr  // Relational, non-associative
+  > left Expr ("+" | "-") Expr   // Additive, left associative
+  > left Expr ("*" | "/") Expr   // Multiplicative, left associative
+  > right "!" Expr               // Unary NOT, right associative
+  > Id                           // Identifier
+  > Int                          // Integer literal
+  > Bool                         // Boolean literal
+  > "(" Expr ")"                 // Parenthesized expression
   ;
 
 syntax Type
