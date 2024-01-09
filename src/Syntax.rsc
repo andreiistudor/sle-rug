@@ -9,37 +9,39 @@ start syntax Form
 syntax Question
   = Str question Id identifier ":" Type qType
   | Str question Id identifier ":" Type qType "=" Expr defaultValue
-  | "if" "(" Expr condition ")" "{" Question* questions "}"
+  | "if" "(" Expr condition ")" "{" Question* questions "}" ("else" "{" Question* elseQuestions "}")?
   ;
 
-syntax Expr 
-  = LogicalExpr;
+syntax Expr = LogicalExpr;
 
 syntax LogicalExpr
-  = LogicalExpr lhs "||" EqExpr rhs
-  > EqExpr;
+  = LogicalExpr "||" AndExpr
+  > AndExpr;
 
-syntax EqExpr
-  = EqExpr lhs "==" RelExpr rhs
-  | EqExpr lhs "!=" RelExpr rhs
-  > RelExpr;
+syntax AndExpr
+  = AndExpr "&&" EqualityExpr
+  > EqualityExpr;
 
-syntax RelExpr
-  = RelExpr lhs "\>" AddExpr rhs
-  | RelExpr lhs "\<" AddExpr rhs
-  | RelExpr lhs "\>=" AddExpr rhs
-  | RelExpr lhs "\<=" AddExpr rhs
-  | RelExpr lhs "&&" AddExpr rhs
-  > AddExpr;
+syntax EqualityExpr
+  = EqualityExpr "==" RelationalExpr
+  | EqualityExpr "!=" RelationalExpr
+  > RelationalExpr;
 
-syntax AddExpr
-  = AddExpr lhs "+" MulExpr rhs
-  | AddExpr lhs "-" MulExpr rhs
-  > MulExpr;
+syntax RelationalExpr
+  = RelationalExpr "\<" AdditiveExpr
+  | RelationalExpr "\>" AdditiveExpr
+  | RelationalExpr "\<=" AdditiveExpr
+  | RelationalExpr "\>=" AdditiveExpr
+  > AdditiveExpr;
 
-syntax MulExpr
-  = MulExpr lhs "*" UnaryExpr rhs
-  | MulExpr lhs "/" UnaryExpr rhs
+syntax AdditiveExpr
+  = AdditiveExpr "+" MultiplicativeExpr
+  | AdditiveExpr "-" MultiplicativeExpr
+  > MultiplicativeExpr;
+
+syntax MultiplicativeExpr
+  = MultiplicativeExpr "*" UnaryExpr
+  | MultiplicativeExpr "/" UnaryExpr
   > UnaryExpr;
 
 syntax UnaryExpr
@@ -48,8 +50,8 @@ syntax UnaryExpr
 
 syntax PrimaryExpr
   = Id
-  | "true"
-  | "false"
+  | Int
+  | Bool
   | "(" Expr ")";
 
 
