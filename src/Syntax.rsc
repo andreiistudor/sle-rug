@@ -52,8 +52,8 @@ syntax PrimaryExpr
   = Id
   | Int
   | Bool
-  | "(" Expr ")";
-
+  | "(" Expr ")"
+  ;
 
 syntax Type
   = "integer"
