@@ -17,6 +17,7 @@ import ParseTree;
 
 AForm cst2ast(start[Form] sf) {
   Form f = sf.top; // remove layout before and after form
+  list[AQuestion] questions = [ cst2ast(q) | q <- f.questions ];
   return form("", [ ], src=f.src); 
 }
 
@@ -34,5 +35,15 @@ AExpr cst2ast(Expr e) {
 }
 
 default AType cst2ast(Type t) {
-  throw "Not yet implemented <t>";
+  switch (t) {
+    case (Type)`"integer"`:
+      return typeInteger(src=t.src);
+    case (Type)`"boolean"`:
+      return typeBoolean(src=t.src);
+    case (Type)`"string"`:
+      return typeString(src=t.src);
+
+    default: 
+      throw "Unhandled type: <t>";
+  }
 }
