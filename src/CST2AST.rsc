@@ -39,6 +39,34 @@ default AQuestion cst2ast(Question q) {
 
 AExpr cst2ast(Expr e) {
   switch (e) {
+    // case (Expr)`<Id x>`: return ref(id("<x>", src=x.src), src=x.src);
+
+    case (Expr)`<Expr left> || <Expr right>`:
+      return logicalOr(cst2ast(left), cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> && <Expr right>`:
+      return logicalAnd(cst2ast(left), cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> == <Expr right>`:
+      return equality(cst2ast(left), "==" ,cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> != <Expr right>`:
+      return equality(cst2ast(left), "!=", cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> + <Expr right>`:
+      return additive(cst2ast(left), "+", cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> - <Expr right>`:
+      return additive(cst2ast(left), "-", cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> * <Expr right>`:
+      return multiplicative(cst2ast(left), "*", cst2ast(right), src=e.src);
+    case (Expr)`<Expr left> / <Expr right>`:
+      return multiplicative(cst2ast(left), "/", cst2ast(right), src=e.src);
+    case (Expr)`!<Expr expr>`:
+      return unary("!", cst2ast(expr), src=e.src);
+    // case (Expr)`<Id id>`:
+    //   return ref(cst2ast(id), src=e.src);
+    // case (Expr)`<Int i>`:
+    //   return literalInt();
+    // case (Expr)`<Bool b>`:
+    //   return literalBool();
+    case (Expr)`(<Expr expr>)`:
+      return parenExpr(cst2ast(expr), src=e.src);
 
     default: throw "Unhandled expression: <e>";
   }
