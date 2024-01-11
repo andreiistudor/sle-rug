@@ -14,3 +14,8 @@ UseDef useDef = RefGraph.useDef;
 resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
 
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))).useDef);
+check(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|))).useDef);
+check(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|))).useDef);
+check(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))).useDef);
+check(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|))).useDef);
+
