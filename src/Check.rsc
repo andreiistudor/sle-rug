@@ -93,6 +93,11 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
       if(count_occurances > 1) 
         msgs += { warning("Duplicate labels detected", id.src) };
 
+      Type myExprtype = typeOf(expr, tenv, useDef);
+      println(myExprtype);
+      if(myExprtype != typeOfByName(qType.name))
+        msgs += { error("Declared type computed questions should match the type of the expression", id.src) };
+
       check(expr, tenv, useDef); // Check the expression
     }
     case question(AExpr expr, list[AQuestion] ifQuestions):
