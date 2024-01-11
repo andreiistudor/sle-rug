@@ -1,1 +1,14 @@
 writeFile(|project://sle-rug/examples/output.txt|, resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|))));
+
+collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
+
+
+
+
+For checking:
+
+AForm ast = cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|));
+RefGraph RefGraph = resolve(ast);
+UseDef useDef = RefGraph.useDef;
+
+check(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))), useDef);

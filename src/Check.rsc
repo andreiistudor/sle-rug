@@ -50,6 +50,8 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
+  println("Checking question...");
+  println(q);
   return {}; 
 }
 
