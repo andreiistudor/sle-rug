@@ -29,7 +29,7 @@ Use uses(AForm f) {
   Use return_result = {};
 
   visit(f) {
-    case ref(AId identifier): return_result += <identifier.src, identifier.name>;
+    case ref(AId identifier): return_result += <identifier.src, identifier.name>; // use of identifier
   };
 
   return return_result;
@@ -39,8 +39,8 @@ Def defs(AForm f) {
   Def return_result = {};
 
   visit(f) {
-    case question(_, AId identifier, _): return_result += <identifier.name, identifier.src>;
-    case question(_, AId identifier, _, _): return_result += <identifier.name, identifier.src>;
+    case question(_, AId identifier, _): return_result += <identifier.name, identifier.src>; // declaration of identifier
+    case question(_, AId identifier, _, _): return_result += <identifier.name, identifier.src>; // declaration of identifier
   };
 
   return return_result; 

@@ -8,36 +8,15 @@ module AST
  */
 
 data AForm(loc src = |tmp:///|)
-  = form(str name, list[AQuestion] questions)
+  = form(str name, list[AQuestion] questions) // For forms with questions
   ; 
-
-// data AQuestion(loc src = |tmp:///|)
-//   = question1(str text, AId identifier, AType qType)
-//   | question2(str text, AId identifier, AType qType, AExpr defaultValue)
-//   | ifQuestion(AExpr condition, list[AQuestion] questions)
-//   | ifElseQuestion(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions)
-//   ; 
 
 data AQuestion(loc src = |tmp:///|)
-  = question(str text, AId identifier, AType qType)
-  | question(str text, AId identifier, AType qType, AExpr defaultValue)
-  | question(AExpr condition, list[AQuestion] questions)
-  | question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions)
+  = question(str text, AId identifier, AType qType) // For questions without default values
+  | question(str text, AId identifier, AType qType, AExpr defaultValue) // For questions with default values
+  | question(AExpr condition, list[AQuestion] questions) // For questions with conditions
+  | question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions) // For questions with if-else conditions
   ; 
-
-// data AExpr(loc src = |tmp:///|)
-//   = logicalOr(AExpr left, AExpr right) // operator is "||"
-//   | logicalAnd(AExpr left, AExpr right) // operator is "&&"
-//   | equality(AExpr left, str operator, AExpr right) // operator is "==" or "!="
-//   | relational(AExpr left, str operator, AExpr right) // operator is "<", ">", "<=", ">="
-//   | additive(AExpr left, str operator, AExpr right) // operator is "+" or "-"
-//   | multiplicative(AExpr left, str operator, AExpr right) // operator is "*" or "/"
-//   | unary(str operator, AExpr expr) // operator is "!"
-//   | ref(AId id) // For identifier references
-//   | literalInt() // For integer literals
-//   | literalBool() // For boolean literals
-//   | parenExpr(AExpr expr) // For parenthesized expressions
-//   ;
 
 data AExpr(loc src = |tmp:///|)
   = ref(AId id) // For identifier references
@@ -48,15 +27,9 @@ data AExpr(loc src = |tmp:///|)
   ;
 
 data AId(loc src = |tmp:///|)
-  = id(str name)
+  = id(str name) // For identifier names
   ;
 
-// data AType(loc src = |tmp:///|)
-//   = typeInteger()
-//   | typeBoolean()
-//   | typeString()
-//   ;
-
 data AType(loc src = |tmp:///|)
-  = setType(str name)
+  = setType(str name) // Setting the type
   ;
