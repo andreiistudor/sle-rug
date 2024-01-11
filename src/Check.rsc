@@ -3,6 +3,7 @@ module Check
 import AST;
 import Resolve;
 import Message; // see standard library
+import IO;
 
 data Type
   = tint()
@@ -17,11 +18,32 @@ alias TEnv = rel[loc def, str name, str label, Type \type];
 // To avoid recursively traversing the form, use the `visit` construct
 // or deep match (e.g., `for (/question(...) := f) {...}` ) 
 TEnv collect(AForm f) {
-  return {}; 
+  TEnv tenv = {};
+
+  visit(f) {
+    case question(str text, AId identifier, AType qType):
+      tenv += { <identifier.src, identifier.name, text, typeOfByName(qType.name)> };
+    case question(str text, AId identifier, AType qType, _):
+      tenv += { <identifier.src, identifier.name, text, typeOfByName(qType.name)> };
+  }
+
+  return tenv;
 }
 
 set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
-  return {}; 
+  set[Message] msgs = {};
+
+  visit(f) {
+    case form(_, list[AQuestion] questions): {
+      println("Checking questions...");
+      for(AQuestion q <- questions) {
+        println(q);
+        msgs += check(q, tenv, useDef); // Check each question in the form
+      }
+    }
+  }
+
+  return msgs;
 }
 
 // - produce an error if there are declared questions with the same name but different types.
@@ -53,7 +75,6 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
         return t;
       }
-    // etc.
   }
   return tunknown(); 
 }
@@ -70,5 +91,17 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
  *
  */
  
- 
+Type typeOfByName(str qType) {
+  switch(qType) {
+    case "integer":
+      return tint();
+    case "boolean":
+      return tbool();
+    case "str":
+      return tstr();
+    
+    default:
+      return tunknown();
+  }
+} 
 
