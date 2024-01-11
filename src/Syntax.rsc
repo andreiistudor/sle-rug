@@ -14,25 +14,25 @@ syntax Question
   ;
 
 syntax Expr
-  = left Expr "||" Expr          // Logical OR, left associative
-  > left Expr "&&" Expr          // Logical AND, left associative
-  > non-assoc Expr ("==" | "!=") Expr  // Equality, non-associative
-  > non-assoc Expr ("\<" | "\>" | "\<=" | "\>=") Expr  // Relational, non-associative
-  > left Expr ("+" | "-") Expr   // Additive, left associative
+  = Id                           // Identifier
+  | Int                          // Integer literal
+  | Bool                         // Boolean literal
+  | "(" Expr ")"                 // Parenthesized expression
   > left Expr ("*" | "/") Expr   // Multiplicative, left associative
+  > left Expr ("+" | "-") Expr   // Additive, left associative
   > right "!" Expr               // Unary NOT, right associative
-  > Id                           // Identifier
-  > Int                          // Integer literal
-  > Bool                         // Boolean literal
-  > "(" Expr ")"                 // Parenthesized expression
+  > left Expr "&&" Expr          // Logical AND, left associative
+  > left Expr "||" Expr          // Logical OR, left associative
+  > non-assoc Expr ("\<" | "\>" | "\<=" | "\>=") Expr  // Relational, non-associative
+  > non-assoc Expr ("==" | "!=") Expr  // Equality, non-associative
   ;
 
 syntax Type
-  = "integer"
-  | "boolean"
-  | "string"
+  = "integer"                     // Integer type
+  | "boolean"                     // Boolean type
+  | "string"                      // String type
   ;
 
-lexical Str = "\"" ![\"]* "\""; 
-lexical Int = [0-9]+; 
-lexical Bool = "true" | "false"; 
+lexical Str = "\"" ![\"]* "\"";   // String lexical
+lexical Int = [0-9]+;             // Integer lexical
+lexical Bool = "true" | "false";  // Boolean lexical

@@ -2,8 +2,8 @@ module CST2AST
 
 import Syntax;
 import AST;
-import IO;
 import String;
+import IO;
 
 import ParseTree;
 
@@ -30,7 +30,10 @@ default AQuestion cst2ast(Question q) {
     case (Question)`<Str text> <Id identifier> : <Type qType> = <Expr qExpr>`:
       return question("<text>", id("<identifier>", src=identifier.src), cst2ast(qType), cst2ast(qExpr), src=q.src);
     case (Question)`if (<Expr condition>) { <Question* questions> }`:
+    {
+      // TODO: Fix not being recursive over the quesitons list in an if statement
       return question(cst2ast(condition), [ cst2ast(q) | q <- questions ], src=q.src);
+    }
     case (Question)`if (<Expr condition>) { <Question* questions> } else { <Question* elseQuestions> }`:
       return question(cst2ast(condition), [ cst2ast(q) | q <- questions ], [ cst2ast(q) | q <- elseQuestions ], src=q.src);
 
@@ -41,8 +44,6 @@ default AQuestion cst2ast(Question q) {
 
 AExpr cst2ast(Expr e) {
   switch (e) {
-    // case (Expr)`<Id x>`: return ref(id("<x>", src=x.src), src=x.src);
-
     case (Expr)`<Expr left> || <Expr right>`:
       return ref(cst2ast(left), cst2ast(right), src=e.src);
     case (Expr)`<Expr left> && <Expr right>`:
