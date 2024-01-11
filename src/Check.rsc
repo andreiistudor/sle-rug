@@ -44,13 +44,62 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
   return msgs;
 }
 
+int idx = 0;
+
 // - produce an error if there are declared questions with the same name but different types.
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
 
-  
+  idx = idx + 1;
+  switch(q) {
+    case question(_, AId id, AType qType):
+    {
+      // Check for same name but different types
+      for (<_, str name, _, Type myType> <- tenv) {
+        // println(q);
+        // println("Name: " + name);
+        if (name == id.name && typeOfByName(qType.name) != myType) {
+          msgs += { error("Questions with the same name but different types", id.src) };
+        }
+      }
+
+      // Check for duplicate labels
+      for (<_, _, str label, _> <- tenv) {
+        println(q);
+        println("Label: " + label);
+        println("Question text: " + q.text);
+        println("Question id: " + id.name);
+        println();
+
+        if (id.name != label) {
+          msgs += { warning("Duplicate labels detected", id.src) };
+          println("Problem");
+          println();
+        }
+      }
+      // println("Did loop 1");
+    }
+    case question(_, AId id, AType qType, AExpr expr):
+    {
+      // Check for same name but different types
+      for (<_, str name, _, Type myType> <- tenv) {
+        if (name == id.name && typeOfByName(qType.name) != myType) {
+          msgs += { error("Questions with the same name but different types", id.src) };
+        }
+      }
+      // Check for duplicate labels
+      for (<_, _, str label, _> <- tenv) {
+        if (id.name != label) { // Assuming identifier.name is unique
+          msgs += { warning("Duplicate labels detected", id.src) };
+        }
+      }
+      // println("Did loop 2"); 
+    }
+  }
+  println("Idx is at: ");
+  println(idx);
 
   return msgs; 
 }
