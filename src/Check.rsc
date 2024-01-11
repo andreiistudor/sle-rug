@@ -93,15 +93,18 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
       if(count_occurances > 1) 
         msgs += { warning("Duplicate labels detected", id.src) };
 
+      check(expr, tenv, useDef); // Check the expression
     }
     case question(AExpr expr, list[AQuestion] ifQuestions):
     {
+      check(expr, tenv, useDef); // Check the expression
       for(AQuestion q <- ifQuestions) {
         msgs += check(q, tenv, useDef); // Check each question in the if statement list
       }
     }
     case question(AExpr expr, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
     {
+      check(expr, tenv, useDef); // Check the expression
       for(AQuestion q <- ifQuestions) {
         msgs += check(q, tenv, useDef); // Check each question in the if questions list
       }
