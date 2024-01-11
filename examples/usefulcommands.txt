@@ -1,0 +1,1 @@
+writeFile(|project://sle-rug/examples/output.txt|, resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|))));
