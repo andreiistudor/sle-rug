@@ -2,6 +2,8 @@ module Eval
 
 import AST;
 import Resolve;
+import IO;
+import String;
 
 /*
  * Implement big-step semantics for QL
@@ -27,11 +29,18 @@ data Input
 // produce an environment which for each question has a default value
 // (e.g. 0 for int, "" for str etc.)
 VEnv initialEnv(AForm f) {
-  return ();
+  VEnv venv = ();
+
+  visit(f) {
+    case question(str text, AId identifier, AType qType):
+      venv[identifier.name] = defaultValue(qType.name);
+  }
+
+  return venv;
 }
 
 
-// Because of out-of-order use and declaration of questions
+// Because of out-of-order use and declaration of questionsA
 // we use the solve primitive in Rascal to find the fixpoint of venv.
 VEnv eval(AForm f, Input inp, VEnv venv) {
   return solve (venv) {
@@ -56,5 +65,15 @@ Value eval(AExpr e, VEnv venv) {
     // etc.
     
     default: throw "Unsupported expression <e>";
+  }
+}
+
+Value defaultValue(str qType) {
+  switch (qType) {
+    case "integer": return vint(0);
+    case "boolean": return vbool(false);
+    case "str": return vstr("");
+
+    default: throw "Unsupported type <qType>";
   }
 }

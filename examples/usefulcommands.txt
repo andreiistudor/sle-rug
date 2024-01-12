@@ -3,7 +3,7 @@ writeFile(|project://sle-rug/examples/output.txt|, resolve(cst2ast(parse(#start[
 collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
 
 
-
+cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))
 
 For checking:
 
@@ -20,3 +20,6 @@ check(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|)), co
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))).useDef);
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|))).useDef);
 
+For eval:
+
+initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
