@@ -34,7 +34,8 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
 
   visit(f) {
-    case form(_, list[AQuestion] questions): {
+    case form(_, list[AQuestion] questions): 
+    {
       for(AQuestion q <- questions) {
         msgs += check(q, tenv, useDef); // Check each question in the form
       }

@@ -32,7 +32,9 @@ VEnv initialEnv(AForm f) {
   VEnv venv = ();
 
   visit(f) {
-    case question(str text, AId identifier, AType qType):
+    case question(_, AId identifier, AType qType):
+      venv[identifier.name] = defaultValue(qType.name);
+    case question(_, AId identifier, AType qType, _):
       venv[identifier.name] = defaultValue(qType.name);
   }
 
@@ -49,7 +51,18 @@ VEnv eval(AForm f, Input inp, VEnv venv) {
 }
 
 VEnv evalOnce(AForm f, Input inp, VEnv venv) {
-  return (); 
+  visit(f) {
+    case form(_, list[AQuestion] questions):
+    {
+      for(AQuestion q <- questions) {
+        println("Evaluating question: ");
+        println(q);
+        venv = eval(q, inp, venv);
+      }
+    }
+  }
+
+  return venv; 
 }
 
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
