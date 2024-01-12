@@ -49,6 +49,7 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
+  set[str] encounteredLabels = {};
 
   switch(q) {
     case question(str label_q, AId id, AType qType):
@@ -60,17 +61,12 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
         }
       }
 
-      int count_occurances = 0;
-
       // Check for duplicate labels
-      for (<_, _, str label, _> <- tenv) {
-        if (label_q == label) {
-          count_occurances += 1;
-        }
-      }
-
-      if(count_occurances > 1)
+      if (label_q in encounteredLabels) {
         msgs += { warning("Duplicate labels detected", id.src) };
+      } else {
+        encounteredLabels += label_q;
+      }
     }
     case question(str label_q, AId id, AType qType, AExpr expr):
     {
@@ -81,17 +77,12 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
         }
       }
 
-      int count_occurances = 0;
-
       // Check for duplicate labels
-      for (<_, _, str label, _> <- tenv) {
-        if (label_q == label) { // Assuming identifier.name is unique
-          count_occurances += 1;
-        }
-      }
-
-      if(count_occurances > 1) 
+      if (label_q in encounteredLabels) {
         msgs += { warning("Duplicate labels detected", id.src) };
+      } else {
+        encounteredLabels += label_q;
+      }
 
       Type myExprtype = typeOf(expr, tenv, useDef);
       if(myExprtype != typeOfByName(qType.name))

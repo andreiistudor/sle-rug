@@ -12,6 +12,7 @@ RefGraph RefGraph = resolve(ast);
 UseDef useDef = RefGraph.useDef;
 
 resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
+resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)));
 
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))).useDef);
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|))).useDef);
