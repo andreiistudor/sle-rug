@@ -34,7 +34,7 @@ VEnv initialEnv(AForm f) {
   visit(f) {
     case question(_, AId identifier, AType qType):
       venv[identifier.name] = defaultValue(qType.name);
-    case question(_, AId identifier, AType qType, AExpr expr):
+    case question(_, AId identifier, _, AExpr expr):
       venv[identifier.name] = eval(expr, venv);
   }
 
@@ -66,7 +66,35 @@ VEnv evalOnce(AForm f, Input inp, VEnv venv) {
 VEnv eval(AQuestion q, Input inp, VEnv venv) {
   // evaluate conditions for branching,
   // evaluate inp and computed questions to return updated VEnv
-  return (); 
+  visit(q) {
+    case question(_, AId identifier, AType qType):
+      if (identifier.name == inp.question) {
+        venv[identifier.name] = inp.\value;
+      }
+    case question(_, AId identifier, _, AExpr expr):
+      if (identifier.name == inp.question) {
+        venv[identifier.name] = inp.\value;
+      } else {
+      venv[identifier.name] = eval(expr, venv);
+      }
+    case question(AExpr expr, list[AQuestion] ifQuestions):
+      if(valueToBool(eval(expr, venv))) {
+        for(AQuestion q <- ifQuestions) {
+          venv = eval(q, inp, venv);
+        }
+      }
+    case question(AExpr expr, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
+      if(valueToBool(eval(expr, venv))) {
+        for(AQuestion q <- ifQuestions) {
+          venv = eval(q, inp, venv);
+        }
+      } else {
+        for(AQuestion q <- elseQuestions) {
+          venv = eval(q, inp, venv);
+        }
+      }
+  }
+  return venv;
 }
 
 Value eval(AExpr e, VEnv venv) {
