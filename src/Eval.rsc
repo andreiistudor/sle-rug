@@ -112,12 +112,6 @@ Value eval(AExpr e, VEnv venv) {
       Value left = eval(lhs, venv);
       Value right = eval(rhs, venv);
 
-      println("Left    Right");
-      print(left);
-      print("  <op>  ");
-      print(right);
-      println(" -- -- ");
-
       switch (op) {
         case "+": return vint(valueToInt(left) + valueToInt(right));
         case "-": return vint(valueToInt(left) - valueToInt(right));
