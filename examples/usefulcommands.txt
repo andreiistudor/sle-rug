@@ -23,3 +23,8 @@ check(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|)), co
 For eval:
 
 initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
+
+
+For compile:
+
+compile(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));

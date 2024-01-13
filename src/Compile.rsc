@@ -20,12 +20,53 @@ import lang::html::IO;
  */
 
 void compile(AForm f) {
-  writeFile(f.src[extension="js"].top, form2js(f));
+  // writeFile(f.src[extension="js"].top, form2js(f));
   writeFile(f.src[extension="html"].top, writeHTMLString(form2html(f)));
 }
 
 HTMLElement form2html(AForm f) {
-  return html([]);
+  list[HTMLElement] formElements = [];
+
+  visit(f) {
+    case question(str text, AId id, AType qType):
+      formElements += [createQuestionElement(text, id, qType)];
+    case question(str text, AId id, AType qType, AExpr expr):
+      formElements += [createComputedQuestionElement(text, id, qType, expr)];
+  }
+
+  return html([
+    body([
+      form([
+        div(formElements)
+      ])
+    ])
+  ]);
+}
+
+HTMLElement createQuestionElement(str label, AId id, AType qType) {
+  switch(qType.name) {
+    case "boolean":
+      return div([
+        div([text("Boolean")])
+      ]);
+    case "string":
+      return div([
+        div([text("String")])
+      ]);
+    case "integer":
+      return div([
+        div([text("Integer")])
+      ]);
+
+    default:
+      return p([text("Unsupported type <qType.name>")]);
+  }
+}
+
+HTMLElement createComputedQuestionElement(str text, AId id, AType qType, AExpr expr) {
+  return div([
+
+  ]);
 }
 
 str form2js(AForm f) {
