@@ -34,15 +34,15 @@ VEnv initialEnv(AForm f) {
   visit(f) {
     case question(_, AId identifier, AType qType):
       venv[identifier.name] = defaultValue(qType.name);
-    case question(_, AId identifier, AType qType, _):
-      venv[identifier.name] = defaultValue(qType.name);
+    case question(_, AId identifier, AType qType, AExpr expr):
+      venv[identifier.name] = eval(expr, venv);
   }
 
   return venv;
 }
 
 
-// Because of out-of-order use and declaration of questionsA
+// Because of out-of-order use and declaration of questions
 // we use the solve primitive in Rascal to find the fixpoint of venv.
 VEnv eval(AForm f, Input inp, VEnv venv) {
   return solve (venv) {
@@ -55,8 +55,6 @@ VEnv evalOnce(AForm f, Input inp, VEnv venv) {
     case form(_, list[AQuestion] questions):
     {
       for(AQuestion q <- questions) {
-        println("Evaluating question: ");
-        println(q);
         venv = eval(q, inp, venv);
       }
     }
@@ -74,9 +72,9 @@ VEnv eval(AQuestion q, Input inp, VEnv venv) {
 Value eval(AExpr e, VEnv venv) {
   switch (e) {
     case ref(id(str x)): return venv[x];
-    
-    // etc.
-    
+    case ref(bool b): return vbool(b);
+    case ref(int n): return vint(n);
+
     default: throw "Unsupported expression <e>";
   }
 }
@@ -88,5 +86,12 @@ Value defaultValue(str qType) {
     case "str": return vstr("");
 
     default: throw "Unsupported type <qType>";
+  }
+}
+
+bool valueToBool(Value v) {
+  switch (v) {
+    case vbool(b): return b;
+    default: throw "Expected boolean value";
   }
 }

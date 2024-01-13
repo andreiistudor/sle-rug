@@ -24,7 +24,7 @@ AForm cst2ast(start[Form] sf) {
 }
 
 default AQuestion cst2ast(Question q) {
-  switch (q) {
+  switch (q) {  
     case (Question)`<Str text> <Id identifier> : <Type qType>`:
       return question("<text>", id("<identifier>", src=identifier.src), cst2ast(qType), src=q.src);    
     case (Question)`<Str text> <Id identifier> : <Type qType> = <Expr qExpr>`:
@@ -42,31 +42,31 @@ default AQuestion cst2ast(Question q) {
 AExpr cst2ast(Expr e) {
   switch (e) {
     case (Expr)`<Expr left> || <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "||", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> && <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "&&", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> == <Expr right>`:
-      return ref(cst2ast(left),cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "==", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> != <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "!=", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> \< <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "\<", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> \> <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "\>", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> \<= <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "\<=", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> \>= <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "\>=", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> + <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "+", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> - <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "-", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> * <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "*", cst2ast(right), src=e.src);
     case (Expr)`<Expr left> / <Expr right>`:
-      return ref(cst2ast(left), cst2ast(right), src=e.src);
+      return ref(cst2ast(left), "/", cst2ast(right), src=e.src);
     case (Expr)`!<Expr expr>`:
-      return ref(cst2ast(expr), src=e.src);
+      return ref(cst2ast(expr), true, src=e.src);
     case (Expr)`<Id identifier>`:
       return ref(id("<identifier>", src=identifier.src), src=e.src);
     case (Expr)`<Int i>`:
@@ -74,7 +74,7 @@ AExpr cst2ast(Expr e) {
     case (Expr)`<Bool b>`:
       return ref(toBool("<b>"), src=b.src);
     case (Expr)`(<Expr expr>)`:
-      return ref(cst2ast(expr), src=e.src);
+      return ref(cst2ast(expr), false, src=e.src);
 
     default: throw "Unhandled expression: <e>";
   }

@@ -11,8 +11,12 @@ AForm ast = cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|));
 RefGraph RefGraph = resolve(ast);
 UseDef useDef = RefGraph.useDef;
 
+For resolve:
+
 resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
 resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)));
+
+For check:
 
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))).useDef);
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|))).useDef);
@@ -23,6 +27,9 @@ check(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|)), co
 For eval:
 
 initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
+
+eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), input("Sth", vint(10)), initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))));
+eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)), input("Sth", vint(10)), initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))));
 
 
 For compile:
