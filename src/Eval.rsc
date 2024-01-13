@@ -74,6 +74,40 @@ Value eval(AExpr e, VEnv venv) {
     case ref(id(str x)): return venv[x];
     case ref(bool b): return vbool(b);
     case ref(int n): return vint(n);
+    case ref(AExpr expr, bool negated):
+    {
+      if(!negated) return eval(expr, venv);
+      else return vbool(!valueToBool(eval(expr, venv)));
+    }
+    case ref(AExpr lhs, str op, AExpr rhs):
+    {
+      Value left = eval(lhs, venv);
+      Value right = eval(rhs, venv);
+
+      println("Left    Right");
+      print(left);
+      print("  <op>  ");
+      print(right);
+      println(" -- -- ");
+
+      switch (op) {
+        case "+": return vint(valueToInt(left) + valueToInt(right));
+        case "-": return vint(valueToInt(left) - valueToInt(right));
+        case "*": return vint(valueToInt(left) * valueToInt(right));
+        case "/": return vint(valueToInt(left) / valueToInt(right));
+        case "\<": return vbool(valueToInt(left) < valueToInt(right));
+        case "\<=": return vbool(valueToInt(left) <= valueToInt(right));
+        case "\>": return vbool(valueToInt(left) > valueToInt(right));
+        case "\>=": return vbool(valueToInt(left) >= valueToInt(right));
+        case "==": return vbool(valueToInt(left) == valueToInt(right));
+        case "!=": return vbool(valueToInt(left) != valueToInt(right));
+        case "&&": return vbool(valueToBool(left) && valueToBool(right));
+        case "||": return vbool(valueToBool(left) || valueToBool(right));
+        case "!": return vbool(!valueToBool(left));
+
+        default: throw "Unsupported operator <op>";
+      }
+    }
 
     default: throw "Unsupported expression <e>";
   }
@@ -93,5 +127,12 @@ bool valueToBool(Value v) {
   switch (v) {
     case vbool(b): return b;
     default: throw "Expected boolean value";
+  }
+}
+
+int valueToInt(Value v) {
+  switch (v) {
+    case vint(n): return n;
+    default: throw "Expected integer value";
   }
 }
