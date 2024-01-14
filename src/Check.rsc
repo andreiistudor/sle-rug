@@ -59,17 +59,17 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
   switch(q) {
     case question(str label_q, AId id, AType qType):
     {
+      if (id.name in encounteredIds) {
+        msgs += { error("Duplicate question identifiers detected", id.src) };
+      } else {
+        encounteredIds += id.name;
+      }
+
       // Check for same name but different types
       for (<_, str name, _, Type myType> <- tenv) {
         if (name == id.name && typeOfByName(qType.name) != myType) {
           msgs += { error("Questions with the same name but different types", id.src) };
         }
-      }
-
-      if (id.name in encounteredIds) {
-        msgs += { error("Duplicate question identifiers detected", id.src) };
-      } else {
-        encounteredIds += id.name;
       }
 
       // Check for duplicate labels
@@ -81,17 +81,17 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
     }
     case question(str label_q, AId id, AType qType, AExpr expr):
     {
+      if (id.name in encounteredIds) {
+        msgs += { error("Duplicate question identifiers detected", id.src) };
+      } else {
+        encounteredIds += id.name;
+      }
+
       // Check for same name but different types
       for (<_, str name, _, Type myType> <- tenv) {
         if (name == id.name && typeOfByName(qType.name) != myType) {
           msgs += { error("Questions with the same name but different types", id.src) };
         }
-      }
-
-      if (id.name in encounteredIds) {
-        msgs += { error("Duplicate question identifiers detected", id.src) };
-      } else {
-        encounteredIds += id.name;
       }
 
       // Check for duplicate labels
@@ -112,7 +112,6 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
     case question(AExpr expr, list[AQuestion] ifQuestions):
     {
       check(expr, tenv, useDef); // Check the expression
-      println(ifQuestions);
       for(AQuestion qs <- ifQuestions) {
         msgs += check(qs, tenv, useDef); // Check each question in the if statement list
       }
@@ -181,9 +180,11 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
 Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
   switch (e) {
     case ref(id(_, src = loc u)):
+    {
       if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
         return t;
       }
+    }
     case ref(bool _):
       return tbool();
     case ref(int _):

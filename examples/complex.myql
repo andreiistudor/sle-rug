@@ -6,7 +6,6 @@ form complexExample {
 
     if (isPositive) {
       "Enter a positive number" positiveNumber: integer = globalNumber
-<<<<<<< HEAD
 
       if (positiveNumber > 10) {
         "Number is greater than 10" isGreaterThanTen: boolean
@@ -21,8 +20,6 @@ form complexExample {
     if (isNonPositive) {
       "Enter a number" negativeNumber: integer = globalNumber
       "Reusing inner scope variable" isGreaterThanTen2: boolean = negativeNumber > 10
-=======
->>>>>>> 7617d773f6bce909c2b2a3c8068f217dcb647166
     }
   }
 
