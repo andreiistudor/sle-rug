@@ -181,6 +181,9 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
   switch (e) {
     case ref(id(_, src = loc u)):
     {
+      // if (!(name in encounteredIds)) {
+      //   return tunknown();
+      // }
       if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
         return t;
       }

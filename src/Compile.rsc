@@ -25,7 +25,74 @@ void compile(AForm f) {
 }
 
 HTMLElement form2html(AForm f) {
-  return html([]);
+  list[HTMLElement] elements = [];
+  visit(f) {
+    case form(_, list[AQuestion] questions): 
+    {
+      for(AQuestion q <- questions) {
+        elements += generateQuestion(q);
+      }
+    }
+  }
+  return html([title([text(f.name)]), head([h1([text(f.name)])]), body([form(elements)])]);
+}
+
+HTMLElement generateQuestion(AQuestion q) {
+  list[HTMLElement] elements = [];
+  switch (q) {
+    case question(str label, AId identifier, AType qType):
+    {
+      HTMLElement element = h2([text(label)]);
+      elements += element;
+      element = input();
+      element.id = identifier.name;
+      if (qType.name == "boolean") {
+        element.\type = "checkbox";
+        elements += element;
+        element = lang::html::AST::label([text("Yes")]);
+      } else if (qType.name == "integer") {
+        element.\type = "number";
+      }
+      elements += element;
+    }
+    case question(str label, AId identifier, AType qType, AExpr expr):
+    {
+      HTMLElement element = h2([text(label)]);
+      elements += element;
+      element = input();
+      element.id = identifier.name;
+      if (qType.name == "boolean") {
+        element.\type = "checkbox";
+        element.readonly = "true";
+        elements += element;
+        element = lang::html::AST::label([text("Yes")]);
+      } else if (qType.name == "integer") {
+        element.\type = "number";
+        element.readonly = "true";
+      }
+      elements += element;
+    }
+    case question(AExpr condition, list[AQuestion] ifQuestions):
+    {
+      for (AQuestion q <- ifQuestions) {
+        elements += generateQuestion(q);
+      }
+    }
+    case question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
+    {
+      list[HTMLElement] ifElements = [];
+      for (AQuestion q <- ifQuestions) {
+        ifElements += generateQuestion(q);
+      }
+      for (AQuestion q <- elseQuestions) {
+        elements += generateQuestion(q);
+      }
+      elements = [div(ifElements), br(), div(elements)];
+    }
+  }
+  HTMLElement div = div(elements);
+  div.style = "padding-left: 40px;";
+  return div;
 }
 
 str form2js(AForm f) {
