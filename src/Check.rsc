@@ -128,7 +128,7 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
     case ref(int integer):
       // Do nothing here
       integer;
-    case ref(AExpr left, AExpr right):
+    case ref(AExpr left, str operation, AExpr right):
     {
       // Check operand compatibility for binary expressions
       Type leftType = typeOf(left, tenv, useDef);
@@ -136,6 +136,13 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
 
       // Check that both operands are of type integer
       if (leftType != tint() || rightType != tint()) {
+        msgs += { error("Incompatible types for operation", e.src) };
+      }
+    }
+    case ref(AExpr expr, bool negated):
+    {
+      Type exprType = typeOf(expr, tenv, useDef);
+      if (exprType != tbool() && exprType != tint()) {
         msgs += { error("Incompatible types for operation", e.src) };
       }
     }
@@ -154,7 +161,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tbool();
     case ref(int _):
       return tint();
-    case ref(AExpr left, AExpr right):
+    case ref(AExpr left, str operation, AExpr right):
     {
       // Check operand compatibility for binary expressions
       Type leftType = typeOf(left, tenv, useDef);
@@ -176,7 +183,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
         return tbool();
       }
     }
-    case ref(AExpr expr):
+    case ref(AExpr expr, bool negated):
     {
       Type exprType = typeOf(expr, tenv, useDef);
       if (exprType == tbool()) {

@@ -23,6 +23,8 @@ check(cst2ast(parse(#start[Form], |project://sle-rug/examples/empty.myql|)), col
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/errors.myql|))).useDef);
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))).useDef);
 check(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/cyclic.myql|))).useDef);
+check(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|)), collect(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|))), resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|))).useDef);
+
 
 For eval:
 
