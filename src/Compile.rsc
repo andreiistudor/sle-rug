@@ -20,7 +20,7 @@ import lang::html::IO;
  */
 
 void compile(AForm f) {
-  // writeFile(f.src[extension="js"].top, form2js(f));
+  writeFile(f.src[extension="js"].top, form2js(f));
   writeFile(f.src[extension="html"].top, writeHTMLString(form2html(f)));
 }
 
@@ -34,7 +34,7 @@ HTMLElement form2html(AForm f) {
       }
     }
   }
-  return html([title([text(f.name)]), head([h1([text(f.name)])]), body([form(elements)])]);
+  return html([title([text(f.name)]), head([h1([text(f.name)])]), body([form(elements), script([text(form2js(f))])])]);
 }
 
 HTMLElement generateQuestion(AQuestion q) {
@@ -96,5 +96,14 @@ HTMLElement generateQuestion(AQuestion q) {
 }
 
 str form2js(AForm f) {
-  return "";
+  str jsScript = "";
+  jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
+  jsScript += "  var inputElements = document.getElementsByTagName(\'input\');\n";
+  jsScript += "  Array.prototype.forEach.call(inputElements, function(element) {\n";
+  jsScript += "    element.addEventListener(\'input\', function() {\n";
+  jsScript += "      console.log(element.id + \' changed\');\n";
+  jsScript += "    });\n";
+  jsScript += "  });\n";
+  jsScript += "});\n";
+  return jsScript;
 }
