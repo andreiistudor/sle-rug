@@ -5,6 +5,9 @@ import Resolve;
 import Message; // see standard library
 import IO;
 
+set[str] encounteredLabels = {};
+set[str] encounteredIds = {};
+
 data Type
   = tint()
   | tbool()
@@ -31,6 +34,8 @@ TEnv collect(AForm f) {
 }
 
 set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
+  encounteredLabels = {};
+  encounteredIds = {};
   set[Message] msgs = {};
 
   visit(f) {
@@ -50,7 +55,6 @@ set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
   set[Message] msgs = {};
-  set[str] encounteredLabels = {};
 
   switch(q) {
     case question(str label_q, AId id, AType qType):
@@ -60,6 +64,12 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
         if (name == id.name && typeOfByName(qType.name) != myType) {
           msgs += { error("Questions with the same name but different types", id.src) };
         }
+      }
+
+      if (id.name in encounteredIds) {
+        msgs += { error("Duplicate question identifiers detected", id.src) };
+      } else {
+        encounteredIds += id.name;
       }
 
       // Check for duplicate labels
@@ -78,6 +88,12 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
         }
       }
 
+      if (id.name in encounteredIds) {
+        msgs += { error("Duplicate question identifiers detected", id.src) };
+      } else {
+        encounteredIds += id.name;
+      }
+
       // Check for duplicate labels
       if (label_q in encounteredLabels) {
         msgs += { warning("Duplicate labels detected", id.src) };
@@ -88,7 +104,6 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
       Type myExprtype = typeOf(expr, tenv, useDef);
       if(myExprtype != typeOfByName(qType.name))
       {
-        println(myExprtype);
         msgs += { error("Declared type computed questions should match the type of the expression", id.src) };
       }
 
@@ -164,7 +179,7 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
 
 Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
   switch (e) {
-    case ref(id(_, src = loc u)):  
+    case ref(id(_, src = loc u)):
       if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
         return t;
       }
@@ -204,13 +219,17 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
         return tbool();
       }
     }
-    case ref(AExpr expr, _):
+    case ref(AExpr expr, bool negated):
     {
       Type exprType = typeOf(expr, tenv, useDef);
-      if (exprType == tbool()) {
-        return tbool();
+      if (negated) {
+        if (exprType == tbool()) {
+          return tbool();
+        } else {
+          return tunknown();
+        }
       } else {
-        return tunknown();
+        return exprType;
       }
 
     }

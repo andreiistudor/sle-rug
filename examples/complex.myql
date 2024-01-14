@@ -9,7 +9,7 @@ form complexExample {
 
       if (positiveNumber > 10) {
         "Number is greater than 10" isGreaterThanTen: boolean
-        "Local variable shadowing global" globalNumber: integer = positiveNumber - 10
+        "Local variable shadowing global" globalNumber2: integer = positiveNumber - 10
       }
     }
   }
@@ -19,7 +19,7 @@ form complexExample {
 
     if (isNonPositive) {
       "Enter a number" negativeNumber: integer = globalNumber
-      "Reusing inner scope variable" isGreaterThanTen: boolean = negativeNumber > 10
+      "Reusing inner scope variable" isGreaterThanTen2: boolean = negativeNumber > 10
     }
   }
 
