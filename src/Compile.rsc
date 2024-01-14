@@ -3,8 +3,10 @@ module Compile
 import AST;
 import Resolve;
 import IO;
+import Eval;
 import lang::html::AST; // see standard library
 import lang::html::IO;
+import Map;
 
 /*
  * Implement a compiler for QL to HTML and Javascript
@@ -19,7 +21,10 @@ import lang::html::IO;
  * - if needed, use the name analysis to link uses to definitions
  */
 
+VEnv venv;
+
 void compile(AForm f) {
+  venv = initialEnv(f);
   writeFile(f.src[extension="js"].top, form2js(f));
   writeFile(f.src[extension="html"].top, writeHTMLString(form2html(f)));
 }
@@ -97,6 +102,7 @@ HTMLElement generateQuestion(AQuestion q) {
 
 str form2js(AForm f) {
   str jsScript = "";
+  jsScript += setDefaultValues(f);
   jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
   jsScript += "  var inputElements = document.getElementsByTagName(\'input\');\n";
   jsScript += "  Array.prototype.forEach.call(inputElements, function(element) {\n";
@@ -106,4 +112,39 @@ str form2js(AForm f) {
   jsScript += "  });\n";
   jsScript += "});\n";
   return jsScript;
+}
+
+str setDefaultValues(AForm f) {
+  str jsScript = "";
+  for (str key <- venv) {
+    switch(venv[key]) {
+      case vint(n) :
+      {
+        jsScript += assign(key, getElementById(key));
+        jsScript += assign(key + ".value", int2str(n));
+      }
+      case vbool(b) :
+      {
+        jsScript += assign(key, getElementById(key));
+        if (b) {
+          jsScript += assign(key + ".checked", "true");
+        } else {
+          jsScript += assign(key + ".checked", "false");
+        }
+      }
+    }
+  }
+  return jsScript;
+}
+
+str assign(str left, str right) {
+  return left + " = " + right + ";\n";
+}
+
+str getElementById(str id) {
+  return "document.getElementById(\'" + id + "\')";
+}
+
+str int2str(int n) {
+  return "<n>";
 }
