@@ -161,7 +161,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tbool();
     case ref(int _):
       return tint();
-    case ref(AExpr left, str operation, AExpr right):
+    case ref(AExpr left, _, AExpr right):
     {
       // Check operand compatibility for binary expressions
       Type leftType = typeOf(left, tenv, useDef);
@@ -183,7 +183,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
         return tbool();
       }
     }
-    case ref(AExpr expr, bool negated):
+    case ref(AExpr expr, _):
     {
       Type exprType = typeOf(expr, tenv, useDef);
       if (exprType == tbool()) {
