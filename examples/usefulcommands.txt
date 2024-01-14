@@ -30,6 +30,8 @@ initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
 
 eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), input("Sth", vint(10)), initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|))));
 eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|)), input("Sth", vint(10)), initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/binary.myql|))));
+eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|)), input("Sth", vint(10)), initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/complex.myql|))));
+
 eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), input("sellingPrice", vint(100)), eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), input("hasBoughtHouse", vbool(true)), initialEnv(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)))));
 
 For compile:
