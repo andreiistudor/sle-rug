@@ -87,7 +87,10 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
 
       Type myExprtype = typeOf(expr, tenv, useDef);
       if(myExprtype != typeOfByName(qType.name))
+      {
+        println(myExprtype);
         msgs += { error("Declared type computed questions should match the type of the expression", id.src) };
+      }
 
       check(expr, tenv, useDef); // Check the expression
     }
@@ -134,15 +137,23 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
       Type leftType = typeOf(left, tenv, useDef);
       Type rightType = typeOf(right, tenv, useDef);
 
-      // Check that both operands are of type integer
-      if (leftType != tint() || rightType != tint()) {
+      // Check operation compatibility for binary expressions
+      if (operation == "+" || operation == "-" || operation == "*" || operation == "/" || operation == "\<" || operation == "\>" || operation == "\<=" || operation == "\>=") {
+        if (leftType != tint() || rightType != tint()) {
+          msgs += { error("Incompatible types for operation", e.src) };
+        }
+      } else if (operation == "&&" || operation == "||") {
+        if (leftType != tbool() || rightType != tbool()) {
+          msgs += { error("Incompatible types for operation", e.src) };
+        }
+      } else if (leftType == tstr() || rightType == tstr() || (leftType != rightType)) {
         msgs += { error("Incompatible types for operation", e.src) };
       }
     }
     case ref(AExpr expr, bool negated):
     {
       Type exprType = typeOf(expr, tenv, useDef);
-      if (exprType != tbool() && exprType != tint()) {
+      if (exprType != tbool()) {
         msgs += { error("Incompatible types for operation", e.src) };
       }
     }
@@ -161,25 +172,35 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tbool();
     case ref(int _):
       return tint();
-    case ref(AExpr left, _, AExpr right):
+    case ref(AExpr left, str operation, AExpr right):
     {
       // Check operand compatibility for binary expressions
       Type leftType = typeOf(left, tenv, useDef);
       Type rightType = typeOf(right, tenv, useDef);
 
-      // Check that both operands are of type integer
-      if ((leftType == tint() && rightType != tint()) || (leftType != tint() && rightType == tint())) {
+      // Check operation compatibility for binary expressions
+      if (operation == "+" || operation == "-" || operation == "*" || operation == "/") {
+        if (leftType != tint() || rightType != tint()) {
+          return tunknown();
+        } else {
+          return tint();
+        }
+      } else if (operation == "\<" || operation == "\>" || operation == "\<=" || operation == "\>=")
+      {
+        if (leftType != tint() || rightType != tint()) {
+          return tunknown();
+        } else {
+          return tbool();
+        }
+      } else if (operation == "&&" || operation == "||") {
+        if (leftType != tbool() || rightType != tbool()) {
+          return tunknown();
+        } else {
+          return tbool();
+        }
+      } else if (leftType == tstr() || rightType == tstr() || (leftType != rightType)) {
         return tunknown();
-      }
-      else {
-        return tint();
-      }
-
-      // Check that both operands are of type boolean
-      if ((leftType == tbool() && rightType != tbool()) || (leftType != tbool() && rightType == tbool())) {
-        return tunknown();
-      }
-      else {
+      } else {
         return tbool();
       }
     }
@@ -188,8 +209,6 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       Type exprType = typeOf(expr, tenv, useDef);
       if (exprType == tbool()) {
         return tbool();
-      } else if (exprType == tint()) {
-        return tint();
       } else {
         return tunknown();
       }

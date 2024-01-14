@@ -20,7 +20,7 @@ import lang::html::IO;
  */
 
 void compile(AForm f) {
-  writeFile(f.src[extension="js"].top, form2js(f));
+  // writeFile(f.src[extension="js"].top, form2js(f));
   writeFile(f.src[extension="html"].top, writeHTMLString(form2html(f)));
 }
 
