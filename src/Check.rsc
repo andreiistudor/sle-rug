@@ -73,7 +73,7 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
       }
 
       // Check for duplicate labels
-      if (label_q in encounteredLabels) {
+      if (isStringInSet(label_q, encounteredLabels)) {
         msgs += { warning("Duplicate labels detected", id.src) };
       } else {
         encounteredLabels += label_q;
@@ -95,7 +95,7 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
       }
 
       // Check for duplicate labels
-      if (label_q in encounteredLabels) {
+      if (isStringInSet(label_q, encounteredLabels)) {
         msgs += { warning("Duplicate labels detected", id.src) };
       } else {
         encounteredLabels += label_q;
@@ -112,18 +112,19 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
     case question(AExpr expr, list[AQuestion] ifQuestions):
     {
       check(expr, tenv, useDef); // Check the expression
-      for(AQuestion q <- ifQuestions) {
-        msgs += check(q, tenv, useDef); // Check each question in the if statement list
+      println(ifQuestions);
+      for(AQuestion qs <- ifQuestions) {
+        msgs += check(qs, tenv, useDef); // Check each question in the if statement list
       }
     }
     case question(AExpr expr, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
     {
       check(expr, tenv, useDef); // Check the expression
-      for(AQuestion q <- ifQuestions) {
-        msgs += check(q, tenv, useDef); // Check each question in the if questions list
+      for(AQuestion qs <- ifQuestions) {
+        msgs += check(qs, tenv, useDef); // Check each question in the if questions list
       }
-      for(AQuestion q <- elseQuestions) {
-        msgs += check(q, tenv, useDef); // Check each question in the else questions list
+      for(AQuestion qs <- elseQuestions) {
+        msgs += check(qs, tenv, useDef); // Check each question in the else questions list
       }
     }
   }
@@ -263,3 +264,11 @@ Type typeOfByName(str qType) {
   }
 } 
 
+bool isStringInSet(str s, set[str] strings) {
+  for (str x <- strings) {
+    if (x == s) {
+      return true;
+    }
+  }
+  return false;
+}
