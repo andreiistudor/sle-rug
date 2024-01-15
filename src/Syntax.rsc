@@ -1,7 +1,6 @@
 module Syntax
 
 extend lang::std::Layout;
-extend lang::std::Id;
 
 start syntax Form 
   = "form" Id name "{" Question* questions "}"; 
@@ -33,6 +32,7 @@ syntax Type
   | "string"                      // String type
   ;
 
-lexical Str = "\"" ![\"]* "\"";   // String lexical
-lexical Int = [\-]?[0-9]+;             // Integer lexical
 lexical Bool = "true" | "false";  // Boolean lexical
+lexical Str = "\"" ![\"]* "\"";   // String lexical
+lexical Int = [\-]?[0-9]+;        // Integer lexical
+lexical Id = ([a-z A-Z][a-z A-Z 0-9 _]*) \ "true" \ "false"; // Identifier lexical

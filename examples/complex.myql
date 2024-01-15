@@ -2,24 +2,26 @@ form complexExample {
   "Enter a number" globalNumber: integer
 
   if (globalNumber > 0) {
-    "Is the number positive?" isPositive: boolean
+    "Is the number positive?" isPositive: boolean = true
 
     if (isPositive) {
       "Enter a positive number" positiveNumber: integer = globalNumber
 
       if (positiveNumber > 10) {
-        "Number is greater than 10" isGreaterThanTen: boolean
-        "Local variable shadowing global" globalNumber2: integer = positiveNumber - 10
+        "Number is greater than 10" isGreaterThanTen: boolean = true
+        "Number smaller with 10" globalNumber2: integer = positiveNumber - 10
+      } else {
+        "Number is greater than 10" isGreaterThanTen2: boolean = false
       }
     }
   }
 
   if (globalNumber <= 0) {
-    "Is the number negative or zero?" isNonPositive: boolean
+    "Is the number negative or zero?" isNonPositive: boolean = true
 
     if (isNonPositive) {
       "Enter a number" negativeNumber: integer = globalNumber
-      "Reusing inner scope variable" isGreaterThanTen2: boolean = negativeNumber > -10
+      "Is bigger than -10" isGreaterThanMinusTen: boolean = negativeNumber > -10
     }
   }
 
