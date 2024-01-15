@@ -25,11 +25,11 @@ AForm cst2ast(start[Form] sf) {
 
 default AQuestion cst2ast(Question q) {
   switch (q) {  
-    case (Question)`<Str text> <Id identifier> : <Type qType>`:
+    case (Question)`" <Str text> " <Id identifier> : <Type qType>`:
     {
       return question("<text>", id("<identifier>", src=identifier.src), cst2ast(qType), src=q.src);    
     }
-    case (Question)`<Str text> <Id identifier> : <Type qType> = <Expr qExpr>`:
+    case (Question)`" <Str text> " <Id identifier> : <Type qType> = <Expr qExpr>`:
     {
       return question("<text>", id("<identifier>", src=identifier.src), cst2ast(qType), cst2ast(qExpr), src=q.src);
     }
@@ -77,7 +77,7 @@ AExpr cst2ast(Expr e) {
       return ref(toInt("<i>"), src=i.src);
     case (Expr)`<Bool b>`:
       return ref(toBool("<b>"), src=b.src);
-    case (Expr)`<Str s>`:
+    case (Expr)`" <Str s> "`:
       return ref("<s>", src=s.src);
     case (Expr)`(<Expr expr>)`:
       return ref(cst2ast(expr), false, src=e.src);

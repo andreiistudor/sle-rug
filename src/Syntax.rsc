@@ -7,8 +7,8 @@ start syntax Form
   = "form" Id name "{" Question* questions "}"; 
 
 syntax Question
-  = Str question Id identifier ":" Type qType
-  | Str question Id identifier ":" Type qType "=" Expr defaultValue
+  = "\"" Str question "\"" Id identifier ":" Type qType
+  | "\"" Str question "\"" Id identifier ":" Type qType "=" Expr defaultValue
   | "if" "(" Expr condition ")" "{" Question* questions "}"
   | "if" "(" Expr condition ")" "{" Question* questions "}" "else" "{" Question* questions "}"
   ;
@@ -17,7 +17,7 @@ syntax Expr
   = Identifier                   // Identifier
   | Int                          // Integer literal
   | Bool                         // Boolean literal
-  | Str                          // String literal
+  | "\"" Str "\""                // String literal
   | "(" Expr ")"                 // Parenthesized expression
   > left Expr ("*" | "/") Expr   // Multiplicative, left associative
   > left Expr ("+" | "-") Expr   // Additive, left associative
@@ -36,6 +36,6 @@ syntax Type
 
 keyword Reserved = "form" | "if" | "else" | "true" | "false" | "integer" | "boolean" | "string"; // Reserved keywords
 lexical Bool = "true" | "false";  // Boolean lexical
-lexical Str = "\"" ![\"]* "\"";   // String lexical
+lexical Str = ![\"]*;   // String lexical
 lexical Int = [\-]?[0-9]+;        // Integer lexical
 lexical Identifier = Id \ Reserved; // Identifier lexical

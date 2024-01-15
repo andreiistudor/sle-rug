@@ -1,5 +1,7 @@
 module Eval
 
+import util::Math;
+
 import AST;
 import Resolve;
 import IO;
@@ -114,7 +116,13 @@ Value eval(AExpr e, VEnv venv) {
       Value right = eval(rhs, venv);
 
       switch (op) {
-        case "+": return vint(valueToInt(left) + valueToInt(right));
+        case "+":
+        {
+          if (left is vint && right is vint) return vint(valueToInt(left) + valueToInt(right));
+          if (left is vint && right is vstr) return vstr(toString(valueToInt(left)) + valueToStr(right));
+          if (left is vstr && right is vint) return vstr(valueToStr(left) + toString(valueToInt(right)));
+          return vstr(valueToStr(left) + valueToStr(right));
+        }
         case "-": return vint(valueToInt(left) - valueToInt(right));
         case "*": return vint(valueToInt(left) * valueToInt(right));
         case "/": return vint(valueToInt(left) / valueToInt(right));
@@ -122,8 +130,16 @@ Value eval(AExpr e, VEnv venv) {
         case "\<=": return vbool(valueToInt(left) <= valueToInt(right));
         case "\>": return vbool(valueToInt(left) > valueToInt(right));
         case "\>=": return vbool(valueToInt(left) >= valueToInt(right));
-        case "==": return vbool(valueToInt(left) == valueToInt(right));
-        case "!=": return vbool(valueToInt(left) != valueToInt(right));
+        case "==":
+        {
+          if (left is vint && right is vint) return vbool(valueToInt(left) == valueToInt(right));
+          return vbool(valueToStr(left) == valueToStr(right));
+        }
+        case "!=":
+        {
+          if (left is vint && right is vint) return vbool(valueToInt(left) != valueToInt(right));
+          return vbool(valueToStr(left) != valueToStr(right));
+        }
         case "&&": return vbool(valueToBool(left) && valueToBool(right));
         case "||": return vbool(valueToBool(left) || valueToBool(right));
         case "!": return vbool(!valueToBool(left));
@@ -157,5 +173,12 @@ int valueToInt(Value v) {
   switch (v) {
     case vint(n): return n;
     default: throw "Expected integer value";
+  }
+}
+
+str valueToStr(Value v) {
+  switch (v) {
+    case vstr(s): return s;
+    default: throw "Expected string value";
   }
 }

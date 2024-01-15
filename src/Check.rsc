@@ -146,6 +146,9 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
     case ref(int integer):
       // Do nothing here
       integer;
+    case ref(str string):
+      // Do nothing here
+      string;
     case ref(AExpr left, str operation, AExpr right):
     {
       // Check operand compatibility for binary expressions
@@ -192,6 +195,8 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       return tbool();
     case ref(int _):
       return tint();
+    case ref(str _):
+      return tstr();
     case ref(AExpr left, str operation, AExpr right):
     {
       // Check operand compatibility for binary expressions

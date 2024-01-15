@@ -119,6 +119,17 @@ str form2js(AForm f) {
   jsScript += createShowFunction();
   jsScript += createHideFunction();
   jsScript += createEvaluateFunction(f);
+  jsScript += createListeners();
+  jsScript += createCallEvaluate();
+  return jsScript;
+}
+
+str createCallEvaluate() {
+  return "\n_evaluate();\n";
+}
+
+str createListeners() {
+  str jsScript = "\n";
   jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
   jsScript += tabs(1) + "var inputElements = document.getElementsByTagName(\'input\');\n";
   jsScript += tabs(1) + "Array.prototype.forEach.call(inputElements, function(element) {\n";
@@ -126,9 +137,13 @@ str form2js(AForm f) {
   jsScript += tabs(3) + "_evaluate();\n";
   jsScript += tabs(2) + "});\n";
   jsScript += tabs(1) + "});\n";
+  jsScript += tabs(1) + "var textareaElements = document.getElementsByTagName(\'textarea\');\n";
+  jsScript += tabs(1) + "Array.prototype.forEach.call(textareaElements, function(element) {\n";
+  jsScript += tabs(2) + "element.addEventListener(\'input\', function() {\n";
+  jsScript += tabs(3) + "_evaluate();\n";
+  jsScript += tabs(2) + "});\n";
+  jsScript += tabs(1) + "});\n";
   jsScript += "});\n";
-  jsScript += "\n";
-  jsScript += "_evaluate();\n";
   return jsScript;
 }
 
@@ -160,7 +175,6 @@ str createEvaluateFunction(AForm f) {
     }
   }
   jsScript += "}\n";
-  jsScript += "\n";
   return jsScript;
 }
 
@@ -268,6 +282,11 @@ str setDefaultValues(AForm f) {
           jsScript += assign(key + ".checked", "false");
         }
       }
+      case vstr(s) :
+      {
+        jsScript += assign(key, getElementById(key));
+        jsScript += assign(key + ".value", "\"" + s + "\"");
+      }
     }
   }
   return jsScript;
@@ -301,6 +320,8 @@ str expr2js(AExpr expr) {
         return id.name + ".value";
       } else if (venv[id.name] is vbool) {
         return id.name + ".checked";
+      } else if (venv[id.name] is vstr) {
+        return id.name + ".value";
       } else {
         return "";
       }
@@ -319,7 +340,7 @@ str expr2js(AExpr expr) {
     }
     case ref(str s):
     {
-      return s;
+      return "\"" + s + "\"";
     }
     case ref(AExpr left, str operation, AExpr right):
     {
