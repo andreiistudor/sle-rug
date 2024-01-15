@@ -70,12 +70,12 @@ HTMLElement generateQuestion(AQuestion q) {
       element.id = identifier.name;
       if (qType.name == "boolean") {
         element.\type = "checkbox";
-        element.readonly = "true";
+        element.disabled = "true";
         elements += element;
         element = lang::html::AST::label([text("Yes")]);
       } else if (qType.name == "integer") {
         element.\type = "number";
-        element.readonly = "true";
+        element.disabled = "true";
       }
       elements += element;
     }
@@ -105,14 +105,65 @@ HTMLElement generateQuestion(AQuestion q) {
 str form2js(AForm f) {
   str jsScript = "";
   jsScript += setDefaultValues(f);
+  jsScript += createEvaluateFunction(f);
   jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
   jsScript += "  var inputElements = document.getElementsByTagName(\'input\');\n";
   jsScript += "  Array.prototype.forEach.call(inputElements, function(element) {\n";
   jsScript += "    element.addEventListener(\'input\', function() {\n";
-  jsScript += "      console.log(element.id + \' changed\');\n";
+  jsScript += "      evaluate(element.id, element.value);\n";
   jsScript += "    });\n";
   jsScript += "  });\n";
   jsScript += "});\n";
+  return jsScript;
+}
+
+str createEvaluateFunction(AForm f) {
+  str jsScript = "";
+  jsScript += "function evaluate(id, value) {\n";
+  visit(f) {
+    case form(_, list[AQuestion] questions): 
+    {
+      for(AQuestion q <- questions) {
+        jsScript += createEvaluateFunction(q);
+      }
+    }
+  }
+  jsScript += "}\n";
+  return jsScript;
+}
+
+str createEvaluateFunction(AQuestion q) {
+  str jsScript = "";
+  switch (q) {
+    case question(str label, AId identifier, AType qType, AExpr expr):
+    {
+      if (qType.name == "boolean") {
+        jsScript += assign(identifier.name + ".checked", expr2js(expr));
+      } else if (qType.name == "integer") {
+        jsScript += assign(identifier.name + ".value", expr2js(expr));
+      }
+    }
+    case question(AExpr condition, list[AQuestion] ifQuestions):
+    {
+      jsScript += "if (" + expr2js(condition) + ") {\n";
+      for (AQuestion q <- ifQuestions) {
+        jsScript += createEvaluateFunction(q);
+      }
+      jsScript += "}\n";
+    }
+    case question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
+    {
+      jsScript += "if (" + expr2js(condition) + ") {\n";
+      for (AQuestion q <- ifQuestions) {
+        jsScript += createEvaluateFunction(q);
+      }
+      jsScript += "} else {\n";
+      for (AQuestion q <- elseQuestions) {
+        jsScript += createEvaluateFunction(q);
+      }
+      jsScript += "}\n";
+    }
+  }
   return jsScript;
 }
 
@@ -149,4 +200,47 @@ str getElementById(str id) {
 
 str int2str(int n) {
   return "<n>";
+}
+
+str expr2js(AExpr expr) {
+  switch (expr) {
+    case ref(AId id):
+    {
+      if (venv[id.name] is vint) {
+        return id.name + ".value";
+      } else if (venv[id.name] is vbool) {
+        return id.name + ".checked";
+      } else {
+        return "";
+      }
+    }
+    case ref(bool b):
+    {
+      if (b) {
+        return "true";
+      } else {
+        return "false";
+      }
+    }
+    case ref(int n):
+    {
+      return int2str(n);
+    }
+    case ref(AExpr left, str operation, AExpr right):
+    {
+      return expr2js(left) + " " + operation + " " + expr2js(right);
+    }
+    case ref(AExpr expr, bool negated):
+    {
+      if (negated) {
+        return "!" + expr2js(expr);
+      } else {
+        return "(" + expr2js(expr) + ")";
+      }
+    }
+    default:
+    {
+      return "";
+    }
+  }
 }
