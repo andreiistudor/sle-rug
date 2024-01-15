@@ -51,16 +51,19 @@ HTMLElement generateQuestion(AQuestion q) {
     {
       HTMLElement element = h2([text(label)]);
       elements += element;
-      element = input();
-      element.id = identifier.name;
       if (qType.name == "boolean") {
+        element = input();
+        element.id = identifier.name;
         element.\type = "checkbox";
         elements += element;
         element = lang::html::AST::label([text("Yes")]);
       } else if (qType.name == "integer") {
+        element = input();
+        element.id = identifier.name;
         element.\type = "number";
       } else if (qType.name == "string") {
-        element.\type = "text";
+        element = textarea([]);
+        element.id = identifier.name;
       }
       elements += element;
     }
@@ -68,18 +71,21 @@ HTMLElement generateQuestion(AQuestion q) {
     {
       HTMLElement element = h2([text(label)]);
       elements += element;
-      element = input();
-      element.id = identifier.name;
       if (qType.name == "boolean") {
+        element = input();
+        element.id = identifier.name;
         element.\type = "checkbox";
         element.disabled = "true";
         elements += element;
         element = lang::html::AST::label([text("Yes")]);
       } else if (qType.name == "integer") {
+        element = input();
+        element.id = identifier.name;
         element.\type = "number";
         element.disabled = "true";
       } else if (qType.name == "string") {
-        element.\type = "text";
+        element = textarea([]);
+        element.id = identifier.name;
         element.disabled = "true";
       }
       elements += element;
@@ -110,23 +116,41 @@ HTMLElement generateQuestion(AQuestion q) {
 str form2js(AForm f) {
   str jsScript = "";
   jsScript += setDefaultValues(f);
+  jsScript += createShowFunction();
+  jsScript += createHideFunction();
   jsScript += createEvaluateFunction(f);
   jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
   jsScript += tabs(1) + "var inputElements = document.getElementsByTagName(\'input\');\n";
   jsScript += tabs(1) + "Array.prototype.forEach.call(inputElements, function(element) {\n";
   jsScript += tabs(2) + "element.addEventListener(\'input\', function() {\n";
-  jsScript += tabs(3) + "evaluate();\n";
+  jsScript += tabs(3) + "_evaluate();\n";
   jsScript += tabs(2) + "});\n";
   jsScript += tabs(1) + "});\n";
   jsScript += "});\n";
   jsScript += "\n";
-  jsScript += "evaluate();\n";
+  jsScript += "_evaluate();\n";
+  return jsScript;
+}
+
+str createShowFunction() {
+  str jsScript = "\n";
+  jsScript += "function _show(element) {\n";
+  jsScript += tabs(1) + "element.parentNode.style.display = \'block\';\n";
+  jsScript += "}\n";
+  return jsScript;
+}
+
+str createHideFunction() {
+  str jsScript = "\n";
+  jsScript += "function _hide(element) {\n";
+  jsScript += tabs(1) + "element.parentNode.style.display = \'none\';\n";
+  jsScript += "}\n";
   return jsScript;
 }
 
 str createEvaluateFunction(AForm f) {
   str jsScript = "\n";
-  jsScript += "function evaluate() {\n";
+  jsScript += "function _evaluate() {\n";
   visit(f) {
     case form(_, list[AQuestion] questions): 
     {
@@ -193,7 +217,7 @@ str createEvaluateFunction(AQuestion q, int indent) {
 }
 
 str shown(str id) {
-  return id + ".parentNode.style.display = \'block\';\n";
+  return "_show(" + id + ");\n";
 }
 
 str hidden(int indent, AQuestion q) {
@@ -201,11 +225,11 @@ str hidden(int indent, AQuestion q) {
   switch (q) {
     case question(str label, AId identifier, AType qType):
     {
-      jsScript += tabs(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
+      jsScript += tabs(indent) + "_hide(" + identifier.name + ");\n";
     }
     case question(str label, AId identifier, AType qType, AExpr expr):
     {
-      jsScript += tabs(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
+      jsScript += tabs(indent) + "_hide(" + identifier.name + ");\n";
     }
     case question(AExpr condition, list[AQuestion] ifQuestions):
     {

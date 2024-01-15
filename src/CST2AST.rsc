@@ -71,7 +71,7 @@ AExpr cst2ast(Expr e) {
       return ref(cst2ast(left), "/", cst2ast(right), src=e.src);
     case (Expr)`!<Expr expr>`:
       return ref(cst2ast(expr), true, src=e.src);
-    case (Expr)`<Id identifier>`:
+    case (Expr)`<Identifier identifier>`:
       return ref(id("<identifier>", src=identifier.src), src=e.src);
     case (Expr)`<Int i>`:
       return ref(toInt("<i>"), src=i.src);
