@@ -94,7 +94,7 @@ HTMLElement generateQuestion(AQuestion q) {
       for (AQuestion q <- elseQuestions) {
         elements += generateQuestion(q);
       }
-      elements = [div(ifElements), br(), div(elements)];
+      elements = [div(ifElements), div(elements)];
     }
   }
   HTMLElement div = div(elements);
@@ -174,7 +174,7 @@ str createEvaluateFunction(AQuestion q, int indent) {
       }
       jsScript += spaces(indent) + "} else {\n";
       for (AQuestion q <- elseQuestions) {
-        jsScript += createEvaluateFunction(q);
+        jsScript += createEvaluateFunction(q, indent + 2);
       }
       for (AQuestion q <- ifQuestions) {
         jsScript += hidden(indent + 2, q);
