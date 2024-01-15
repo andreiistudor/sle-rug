@@ -107,12 +107,12 @@ str form2js(AForm f) {
   jsScript += setDefaultValues(f);
   jsScript += createEvaluateFunction(f);
   jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
-  jsScript += spaces(2) + "var inputElements = document.getElementsByTagName(\'input\');\n";
-  jsScript += spaces(2) + "Array.prototype.forEach.call(inputElements, function(element) {\n";
-  jsScript += spaces(4) + "element.addEventListener(\'input\', function() {\n";
-  jsScript += spaces(6) + "evaluate();\n";
-  jsScript += spaces(4) + "});\n";
-  jsScript += spaces(2) + "});\n";
+  jsScript += tabs(1) + "var inputElements = document.getElementsByTagName(\'input\');\n";
+  jsScript += tabs(1) + "Array.prototype.forEach.call(inputElements, function(element) {\n";
+  jsScript += tabs(2) + "element.addEventListener(\'input\', function() {\n";
+  jsScript += tabs(3) + "evaluate();\n";
+  jsScript += tabs(2) + "});\n";
+  jsScript += tabs(1) + "});\n";
   jsScript += "});\n";
   jsScript += "\n";
   jsScript += "evaluate();\n";
@@ -126,7 +126,7 @@ str createEvaluateFunction(AForm f) {
     case form(_, list[AQuestion] questions): 
     {
       for(AQuestion q <- questions) {
-        jsScript += createEvaluateFunction(q, 2);
+        jsScript += createEvaluateFunction(q, 1);
       }
     }
   }
@@ -140,46 +140,46 @@ str createEvaluateFunction(AQuestion q, int indent) {
   switch (q) {
     case question(str label, AId identifier, AType qType):
     {
-      jsScript += spaces(indent) + shown(identifier.name);
+      jsScript += tabs(indent) + shown(identifier.name);
     }
     case question(str label, AId identifier, AType qType, AExpr expr):
     {
       if (qType.name == "boolean") {
-        jsScript += spaces(indent) + assign(identifier.name + ".checked", expr2js(expr));
+        jsScript += tabs(indent) + assign(identifier.name + ".checked", expr2js(expr));
       } else if (qType.name == "integer") {
-        jsScript += spaces(indent) + assign(identifier.name + ".value", expr2js(expr));
+        jsScript += tabs(indent) + assign(identifier.name + ".value", expr2js(expr));
       }
-      jsScript += spaces(indent) + shown(identifier.name);
+      jsScript += tabs(indent) + shown(identifier.name);
     }
     case question(AExpr condition, list[AQuestion] ifQuestions):
     {
-      jsScript += spaces(indent) + "if (" + expr2js(condition) + ") {\n";
+      jsScript += tabs(indent) + "if (" + expr2js(condition) + ") {\n";
       for (AQuestion q <- ifQuestions) {
-        jsScript += createEvaluateFunction(q, indent + 2);
+        jsScript += createEvaluateFunction(q, indent + 1);
       }
-      jsScript += spaces(indent) + "} else {\n";
+      jsScript += tabs(indent) + "} else {\n";
       for (AQuestion q <- ifQuestions) {
-        jsScript += hidden(indent + 2, q);
+        jsScript += hidden(indent + 1, q);
       }
-      jsScript += spaces(indent) + "}\n";
+      jsScript += tabs(indent) + "}\n";
     }
     case question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
     {
-      jsScript += spaces(indent) + "if (" + expr2js(condition) + ") {\n";
+      jsScript += tabs(indent) + "if (" + expr2js(condition) + ") {\n";
       for (AQuestion q <- ifQuestions) {
-        jsScript += createEvaluateFunction(q, indent + 2);
+        jsScript += createEvaluateFunction(q, indent + 1);
       }
       for (AQuestion q <- elseQuestions) {
-        jsScript += hidden(indent + 2, q);
+        jsScript += hidden(indent + 1, q);
       }
-      jsScript += spaces(indent) + "} else {\n";
+      jsScript += tabs(indent) + "} else {\n";
       for (AQuestion q <- elseQuestions) {
-        jsScript += createEvaluateFunction(q, indent + 2);
+        jsScript += createEvaluateFunction(q, indent + 1);
       }
       for (AQuestion q <- ifQuestions) {
-        jsScript += hidden(indent + 2, q);
+        jsScript += hidden(indent + 1, q);
       }
-      jsScript += spaces(indent) + "}\n";
+      jsScript += tabs(indent) + "}\n";
     }
   }
   return jsScript;
@@ -194,11 +194,11 @@ str hidden(int indent, AQuestion q) {
   switch (q) {
     case question(str label, AId identifier, AType qType):
     {
-      jsScript += spaces(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
+      jsScript += tabs(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
     }
     case question(str label, AId identifier, AType qType, AExpr expr):
     {
-      jsScript += spaces(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
+      jsScript += tabs(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
     }
     case question(AExpr condition, list[AQuestion] ifQuestions):
     {
@@ -254,10 +254,10 @@ str int2str(int n) {
   return "<n>";
 }
 
-str spaces(int n) {
+str tabs(int n) {
   str s = "";
   for (int i <- [0..n]) {
-    s += " ";
+    s += "\t";
   }
   return s;
 }
