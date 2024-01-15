@@ -34,7 +34,5 @@ syntax Type
   ;
 
 lexical Str = "\"" ![\"]* "\"";   // String lexical
-lexical Int = [0-9]+;             // Integer lexical
+lexical Int = [\-]?[0-9]+;             // Integer lexical
 lexical Bool = "true" | "false";  // Boolean lexical
-
-keyword Reserved = "form" | "if" | "else" | "integer" | "boolean" | "string" | "true" | "false";

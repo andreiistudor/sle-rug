@@ -19,7 +19,7 @@ form complexExample {
 
     if (isNonPositive) {
       "Enter a number" negativeNumber: integer = globalNumber
-      "Reusing inner scope variable" isGreaterThanTen2: boolean = negativeNumber > 0 - 10
+      "Reusing inner scope variable" isGreaterThanTen2: boolean = negativeNumber > -10
     }
   }
 
