@@ -39,7 +39,9 @@ HTMLElement form2html(AForm f) {
       }
     }
   }
-  return html([title([text(f.name)]), head([h1([text(f.name)])]), body([form(elements), script([text(form2js(f))])])]);
+  HTMLElement scriptSrc = script([]);
+  scriptSrc.src = f.src[extension="js"].file;
+  return html([title([text(f.name)]), head([h1([text(f.name)])]), body([form(elements), scriptSrc])]);
 }
 
 HTMLElement generateQuestion(AQuestion q) {
