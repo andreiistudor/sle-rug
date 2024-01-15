@@ -26,4 +26,6 @@ form complexExample {
   }
 
   "Using globalNumber" finalValue: integer = globalNumber * 2
+
+  "Enter a description" description: string = "This is a description"
 }

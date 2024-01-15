@@ -260,7 +260,7 @@ Type typeOfByName(str qType) {
       return tint();
     case "boolean":
       return tbool();
-    case "str":
+    case "string":
       return tstr();
     
     default:

@@ -22,6 +22,7 @@ data AExpr(loc src = |tmp:///|)
   = ref(AId id) // For identifier references
   | ref(bool boolean) // For boolean literals
   | ref(int number) // For integer literals
+  | ref(str string) // For string literals
   | ref(AExpr left, str operation, AExpr right) // Binary expressions
   | ref(AExpr expr, bool negated) // Unary expression
   ;

@@ -16,6 +16,7 @@ syntax Expr
   = Id                           // Identifier
   | Int                          // Integer literal
   | Bool                         // Boolean literal
+  | Str                          // String literal
   | "(" Expr ")"                 // Parenthesized expression
   > left Expr ("*" | "/") Expr   // Multiplicative, left associative
   > left Expr ("+" | "-") Expr   // Additive, left associative

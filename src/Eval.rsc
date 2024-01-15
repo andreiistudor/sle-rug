@@ -102,6 +102,7 @@ Value eval(AExpr e, VEnv venv) {
     case ref(id(str x)): return venv[x];
     case ref(bool b): return vbool(b);
     case ref(int n): return vint(n);
+    case ref(str s): return vstr(s);
     case ref(AExpr expr, bool negated):
     {
       if(!negated) return eval(expr, venv);
@@ -139,7 +140,7 @@ Value defaultValue(str qType) {
   switch (qType) {
     case "integer": return vint(0);
     case "boolean": return vbool(false);
-    case "str": return vstr("");
+    case "string": return vstr("");
 
     default: throw "Unsupported type <qType>";
   }

@@ -59,6 +59,8 @@ HTMLElement generateQuestion(AQuestion q) {
         element = lang::html::AST::label([text("Yes")]);
       } else if (qType.name == "integer") {
         element.\type = "number";
+      } else if (qType.name == "string") {
+        element.\type = "text";
       }
       elements += element;
     }
@@ -75,6 +77,9 @@ HTMLElement generateQuestion(AQuestion q) {
         element = lang::html::AST::label([text("Yes")]);
       } else if (qType.name == "integer") {
         element.\type = "number";
+        element.disabled = "true";
+      } else if (qType.name == "string") {
+        element.\type = "text";
         element.disabled = "true";
       }
       elements += element;
@@ -147,6 +152,8 @@ str createEvaluateFunction(AQuestion q, int indent) {
       if (qType.name == "boolean") {
         jsScript += tabs(indent) + assign(identifier.name + ".checked", expr2js(expr));
       } else if (qType.name == "integer") {
+        jsScript += tabs(indent) + assign(identifier.name + ".value", expr2js(expr));
+      } else if (qType.name == "string") {
         jsScript += tabs(indent) + assign(identifier.name + ".value", expr2js(expr));
       }
       jsScript += tabs(indent) + shown(identifier.name);
@@ -285,6 +292,10 @@ str expr2js(AExpr expr) {
     case ref(int n):
     {
       return int2str(n);
+    }
+    case ref(str s):
+    {
+      return s;
     }
     case ref(AExpr left, str operation, AExpr right):
     {

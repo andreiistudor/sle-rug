@@ -77,6 +77,8 @@ AExpr cst2ast(Expr e) {
       return ref(toInt("<i>"), src=i.src);
     case (Expr)`<Bool b>`:
       return ref(toBool("<b>"), src=b.src);
+    case (Expr)`<Str s>`:
+      return ref("<s>", src=s.src);
     case (Expr)`(<Expr expr>)`:
       return ref(cst2ast(expr), false, src=e.src);
 
