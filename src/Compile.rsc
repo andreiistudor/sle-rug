@@ -107,61 +107,113 @@ str form2js(AForm f) {
   jsScript += setDefaultValues(f);
   jsScript += createEvaluateFunction(f);
   jsScript += "document.addEventListener(\'DOMContentLoaded\', function() {\n";
-  jsScript += "  var inputElements = document.getElementsByTagName(\'input\');\n";
-  jsScript += "  Array.prototype.forEach.call(inputElements, function(element) {\n";
-  jsScript += "    element.addEventListener(\'input\', function() {\n";
-  jsScript += "      evaluate(element.id, element.value);\n";
-  jsScript += "    });\n";
-  jsScript += "  });\n";
+  jsScript += spaces(2) + "var inputElements = document.getElementsByTagName(\'input\');\n";
+  jsScript += spaces(2) + "Array.prototype.forEach.call(inputElements, function(element) {\n";
+  jsScript += spaces(4) + "element.addEventListener(\'input\', function() {\n";
+  jsScript += spaces(6) + "evaluate();\n";
+  jsScript += spaces(4) + "});\n";
+  jsScript += spaces(2) + "});\n";
   jsScript += "});\n";
+  jsScript += "\n";
+  jsScript += "evaluate();\n";
   return jsScript;
 }
 
 str createEvaluateFunction(AForm f) {
-  str jsScript = "";
-  jsScript += "function evaluate(id, value) {\n";
+  str jsScript = "\n";
+  jsScript += "function evaluate() {\n";
   visit(f) {
     case form(_, list[AQuestion] questions): 
     {
       for(AQuestion q <- questions) {
-        jsScript += createEvaluateFunction(q);
+        jsScript += createEvaluateFunction(q, 2);
       }
     }
   }
   jsScript += "}\n";
+  jsScript += "\n";
   return jsScript;
 }
 
-str createEvaluateFunction(AQuestion q) {
+str createEvaluateFunction(AQuestion q, int indent) {
   str jsScript = "";
   switch (q) {
+    case question(str label, AId identifier, AType qType):
+    {
+      jsScript += spaces(indent) + shown(identifier.name);
+    }
     case question(str label, AId identifier, AType qType, AExpr expr):
     {
       if (qType.name == "boolean") {
-        jsScript += assign(identifier.name + ".checked", expr2js(expr));
+        jsScript += spaces(indent) + assign(identifier.name + ".checked", expr2js(expr));
       } else if (qType.name == "integer") {
-        jsScript += assign(identifier.name + ".value", expr2js(expr));
+        jsScript += spaces(indent) + assign(identifier.name + ".value", expr2js(expr));
       }
+      jsScript += spaces(indent) + shown(identifier.name);
     }
     case question(AExpr condition, list[AQuestion] ifQuestions):
     {
-      jsScript += "if (" + expr2js(condition) + ") {\n";
+      jsScript += spaces(indent) + "if (" + expr2js(condition) + ") {\n";
       for (AQuestion q <- ifQuestions) {
-        jsScript += createEvaluateFunction(q);
+        jsScript += createEvaluateFunction(q, indent + 2);
       }
-      jsScript += "}\n";
+      jsScript += spaces(indent) + "} else {\n";
+      for (AQuestion q <- ifQuestions) {
+        jsScript += hidden(indent + 2, q);
+      }
+      jsScript += spaces(indent) + "}\n";
     }
     case question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
     {
-      jsScript += "if (" + expr2js(condition) + ") {\n";
+      jsScript += spaces(indent) + "if (" + expr2js(condition) + ") {\n";
       for (AQuestion q <- ifQuestions) {
-        jsScript += createEvaluateFunction(q);
+        jsScript += createEvaluateFunction(q, indent + 2);
       }
-      jsScript += "} else {\n";
+      for (AQuestion q <- elseQuestions) {
+        jsScript += hidden(indent + 2, q);
+      }
+      jsScript += spaces(indent) + "} else {\n";
       for (AQuestion q <- elseQuestions) {
         jsScript += createEvaluateFunction(q);
       }
-      jsScript += "}\n";
+      for (AQuestion q <- ifQuestions) {
+        jsScript += hidden(indent + 2, q);
+      }
+      jsScript += spaces(indent) + "}\n";
+    }
+  }
+  return jsScript;
+}
+
+str shown(str id) {
+  return id + ".parentNode.style.display = \'block\';\n";
+}
+
+str hidden(int indent, AQuestion q) {
+  str jsScript = "";
+  switch (q) {
+    case question(str label, AId identifier, AType qType):
+    {
+      jsScript += spaces(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
+    }
+    case question(str label, AId identifier, AType qType, AExpr expr):
+    {
+      jsScript += spaces(indent) + identifier.name + ".parentNode.style.display = \'none\';\n";
+    }
+    case question(AExpr condition, list[AQuestion] ifQuestions):
+    {
+      for (AQuestion q <- ifQuestions) {
+        jsScript += hidden(indent, q);
+      }
+    }
+    case question(AExpr condition, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
+    {
+      for (AQuestion q <- ifQuestions) {
+        jsScript += hidden(indent, q);
+      }
+      for (AQuestion q <- elseQuestions) {
+        jsScript += hidden(indent, q);
+      }
     }
   }
   return jsScript;
@@ -200,6 +252,14 @@ str getElementById(str id) {
 
 str int2str(int n) {
   return "<n>";
+}
+
+str spaces(int n) {
+  str s = "";
+  for (int i <- [0..n]) {
+    s += " ";
+  }
+  return s;
 }
 
 str expr2js(AExpr expr) {
