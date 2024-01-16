@@ -58,13 +58,13 @@ list[AQuestion] flattenQuestions(list[AQuestion] questions, AExpr parentConditio
 }
 
 AExpr combineConditions(AExpr cond1, AExpr cond2) {
-    if (isTrueExpr(cond1)) {
-        return cond2;
-    } else if (isTrueExpr(cond2)) {
-        return cond1;
-    } else {
+    // if (isTrueExpr(cond1)) {
+        // return cond2;
+    // } else if (isTrueExpr(cond2)) {
+        // return cond1;
+    // } else {
         return ref(cond1, "&&", cond2);
-    }
+    // }
 }
 
 AExpr trueExpr() {
