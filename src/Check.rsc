@@ -204,7 +204,28 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
       Type rightType = typeOf(right, tenv, useDef);
 
       // Check operation compatibility for binary expressions
-      if (operation == "+" || operation == "-" || operation == "*" || operation == "/") {
+      if (operation == "+") {
+        if (leftType == tstr()) {
+          if (rightType == tstr()) {
+            return tstr();
+          } else if (rightType == tint()) {
+            return tstr();
+          } else {
+            return tunknown();
+          }
+        } else if (leftType == tint()) {
+          if (rightType == tstr()) {
+            return tstr();
+          } else if (rightType == tint()) {
+            return tint();
+          } else {
+            return tunknown();
+          }
+        } else {
+          return tunknown();
+        }
+      } else 
+      if (operation == "-" || operation == "*" || operation == "/") {
         if (leftType != tint() || rightType != tint()) {
           return tunknown();
         } else {
@@ -223,7 +244,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
         } else {
           return tbool();
         }
-      } else if (leftType == tstr() || rightType == tstr() || (leftType != rightType)) {
+      } else if (leftType != rightType) {
         return tunknown();
       } else {
         return tbool();

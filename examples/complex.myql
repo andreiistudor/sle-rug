@@ -27,7 +27,7 @@ form complexExample {
 
   "Using globalNumber" finalValue: integer = globalNumber * 2
 
-  "Enter a description" description: string = 2 + "te" + 3 + "st" + 2
+  "Enter a description" description: string = "te" + "st"
 
   "Description is test" isTest: boolean = (description == "test")
 }
