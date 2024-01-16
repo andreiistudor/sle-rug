@@ -29,8 +29,59 @@ import AST;
  */
  
 AForm flatten(AForm f) {
-  return f; 
+    return visit(f) {
+        case form(name, questions): {
+            return form(name, flattenQuestions(questions, trueExpr()));
+        }
+    };
 }
+
+list[AQuestion] flattenQuestions(list[AQuestion] questions, AExpr parentCondition) {
+    list[AQuestion] flattenedQuestions = [];
+    for (AQuestion q <- questions) {
+        switch(q) {
+            case question(AExpr cond, list[AQuestion] nestedQuestions): {
+                AExpr combinedCondition = combineConditions(parentCondition, cond);
+                flattenedQuestions += flattenQuestions(nestedQuestions, combinedCondition);
+            }
+            case question(AExpr cond, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions): {
+                flattenedQuestions += flattenQuestions(ifQuestions, combineConditions(parentCondition, cond));
+                flattenedQuestions += flattenQuestions(elseQuestions, parentCondition);
+            }
+            default: {
+                list[AQuestion] questionAux = [q];
+                flattenedQuestions += question(parentCondition, questionAux);
+            }
+        }
+    }
+    return flattenedQuestions;
+}
+
+AExpr combineConditions(AExpr cond1, AExpr cond2) {
+    if (isTrueExpr(cond1)) {
+        return cond2;
+    } else if (isTrueExpr(cond2)) {
+        return cond1;
+    } else {
+        return ref(cond1, "&&", cond2);
+    }
+}
+
+AExpr trueExpr() {
+    return ref(true);
+}
+
+
+bool isTrueExpr(AExpr expr) {
+    bool result = false;
+    visit(expr) {
+        case ref(bool b): result = b;
+        default: result = false;
+    };
+
+    return result;
+}
+
 
 /* Rename refactoring:
  *

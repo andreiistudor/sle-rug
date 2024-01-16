@@ -39,3 +39,7 @@ eval(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)), input(
 For compile:
 
 compile(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
+
+For transform:
+
+flatten(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
