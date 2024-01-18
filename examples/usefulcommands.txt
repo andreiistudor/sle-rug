@@ -43,3 +43,6 @@ compile(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
 For transform:
 
 flatten(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)));
+
+rename(parse(#start[Form], |project://sle-rug/examples/tax.myql|), |project://sle-rug/examples/tax.myql|(268,12,<14,6>,<14,18>), "soldHouse", resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)))<2>);
+rename(parse(#start[Form], |project://sle-rug/examples/tax.myql|), |project://sle-rug/examples/tax.myql|(470,12,<20,30>,<20,42>), "selling", resolve(cst2ast(parse(#start[Form], |project://sle-rug/examples/tax.myql|)))<2>);
