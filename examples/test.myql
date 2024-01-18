@@ -4,17 +4,10 @@ form test {
   if (globalNumber > 0) {
     "Is the number positive?" isPositive: boolean = true
     if (isPositive) {
-        if(true) {
-            "The number is positive" isPositive2: boolean
-        }
+        "The number is positive" positiveMessage: string
     } else {
-        "hehe" hehe: string
+        "The number is negative" negativeMessage: string
     }
-    "The number is negative" negativeMessage: string
-  } else {
-    "Is the number positivehehe?" isPositive: boolean = false
   }
-  if (isPositive) {
-    "The number is positive2" isPositive3: boolean
-  }
+  "Test" test: string
 }

@@ -1,6 +1,6 @@
 form allWrongExample {
   "Same name" sameName : boolean
-  "Same name" sameName : boolean
+  "Same name" sameName : integer
 
   "Same label" sameLabel : integer
   "Same label" sameLabel2 : integer
