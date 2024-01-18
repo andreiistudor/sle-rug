@@ -133,12 +133,14 @@ Value eval(AExpr e, VEnv venv) {
         case "==":
         {
           if (left is vint && right is vint) return vbool(valueToInt(left) == valueToInt(right));
-          return vbool(valueToStr(left) == valueToStr(right));
+          if (left is vstr && right is vstr) return vbool(valueToStr(left) == valueToStr(right));
+          return vbool(valueToBool(left) == valueToBool(right));
         }
         case "!=":
         {
           if (left is vint && right is vint) return vbool(valueToInt(left) != valueToInt(right));
-          return vbool(valueToStr(left) != valueToStr(right));
+          if (left is vstr && right is vstr) return vbool(valueToStr(left) != valueToStr(right));
+          return vbool(valueToBool(left) != valueToBool(right));
         }
         case "&&": return vbool(valueToBool(left) && valueToBool(right));
         case "||": return vbool(valueToBool(left) || valueToBool(right));

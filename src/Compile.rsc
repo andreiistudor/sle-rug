@@ -317,7 +317,7 @@ str expr2js(AExpr expr) {
     case ref(AId id):
     {
       if (venv[id.name] is vint) {
-        return id.name + ".value";
+        return "+" + id.name + ".value";
       } else if (venv[id.name] is vbool) {
         return id.name + ".checked";
       } else if (venv[id.name] is vstr) {

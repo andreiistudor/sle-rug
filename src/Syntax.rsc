@@ -22,10 +22,10 @@ syntax Expr
   > left Expr ("*" | "/") Expr   // Multiplicative, left associative
   > left Expr ("+" | "-") Expr   // Additive, left associative
   > right "!" Expr               // Unary NOT, right associative
-  > left Expr "&&" Expr          // Logical AND, left associative
-  > left Expr "||" Expr          // Logical OR, left associative
   > non-assoc Expr ("\<" | "\>" | "\<=" | "\>=") Expr  // Relational, non-associative
   > non-assoc Expr ("==" | "!=") Expr  // Equality, non-associative
+  > left Expr "&&" Expr          // Logical AND, left associative
+  > left Expr "||" Expr          // Logical OR, left associative
   ;
 
 syntax Type
