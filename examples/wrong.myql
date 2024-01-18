@@ -1,0 +1,208 @@
+form allWrongExample {
+  "Same name" sameName : boolean
+  "Same name" sameName : boolean
+
+  "Same label" sameLabel : integer
+  "Same label" sameLabel2 : integer
+
+  "Wrong default" wrongDefault : integer = "wrong"
+  "Wrong default" wrongDefault2 : integer = true
+  "Wrong default" wrongDefault3 : boolean = 1
+  "Wrong default" wrongDefault4 : boolean = "wrong"
+  "Wrong default" wrongDefault5 : string = 1
+  "Wrong default" wrongDefault6 : string = false
+
+  "Reference to non-existing" reference : string = nonExisting
+  "Reference to non-existing" reference2 : boolean = nonExisting
+  "Reference to non-existing" reference3 : integer = nonExisting
+
+  "Wrong condition" wrongCondition : boolean = (true && 1)
+  "Wrong condition" wrongCondition2 : boolean = 1 || false
+  "Wrong condition" wrongCondition3 : boolean = (true == 1)
+  "Wrong condition" wrongCondition4 : boolean = (1 != false)
+  "Wrong condition" wrongCondition5 : boolean = 1 == "wrong"
+  "Wrong condition" wrongCondition6 : boolean = (1 != "wrong")
+  "Wrong condition" wrongCondition7 : boolean = false && "wrong"
+  "Wrong condition" wrongCondition8 : boolean = ("wrong" || true)
+  "Wrong condition" wrongCondition9 : boolean = (wrongCondition8 || true) && 1
+  "Wrong condition" wrongCondition10 : boolean = (wrongCondition7 || true) && "wrong"
+  "Wrong condition" wrongCondition11 : boolean = (wrongCondition6 && true) == "wrong"
+  "Wrong condition" wrongCondition12 : boolean = (wrongCondition5 && true) != 1
+
+  "Wrong comparison" wrongComparison : boolean = wrongDefault2 < true
+  "Wrong comparison" wrongComparison2 : boolean = 1 > false
+  "Wrong comparison" wrongComparison3 : boolean = 1 <= wrongDefault5
+  "Wrong comparison" wrongComparison4 : boolean = 1 >= "wrong"
+  "Wrong comparison" wrongComparison5 : boolean = 1 == "wrong"
+  "Wrong comparison" wrongComparison7 : boolean = "wrong" != wrongDefault3
+  
+  "Wrong negation" wrongNegation : boolean = !1
+  "Wrong negation" wrongNegation2 : boolean = !"wrong"
+  "Wrong negation" wrongNegation3 : boolean = !wrongDefault
+  "Wrong negation" wrongNegation4 : boolean = !wrongDefault5
+  "Wrong negation" wrongNegation5 : integer = !wrongDefault2
+  "Wrong negation" wrongNegation6 : string = !wrongDefault6
+
+  "Wrong addition" wrongAddition : integer = 1 + "wrong"
+  "Wrong addition" wrongAddition2 : integer = true + 1
+  "Wrong addition" wrongAddition3 : integer = 1 + false
+  "Wrong addition" wrongAddition4 : integer = wrongDefault6 + 1
+  "Wrong addition" wrongAddition5 : integer = 1 + wrongDefault3
+
+  "Wrong subtraction" wrongSubtraction : integer = 2 - "wrong"
+  "Wrong subtraction" wrongSubtraction2 : integer = true - 2
+  "Wrong subtraction" wrongSubtraction3 : integer = 2 - false
+  "Wrong subtraction" wrongSubtraction4 : integer = wrongDefault6 - 2
+  "Wrong subtraction" wrongSubtraction5 : integer = 2 - wrongDefault3
+
+  "Wrong multiplication" wrongMultiplication : integer = 3 * "wrong"
+  "Wrong multiplication" wrongMultiplication2 : integer = true * 3
+  "Wrong multiplication" wrongMultiplication3 : integer = 3 * false
+  "Wrong multiplication" wrongMultiplication4 : integer = wrongDefault6 * 3
+  "Wrong multiplication" wrongMultiplication5 : integer = 3 * wrongDefault3
+
+  "Wrong division" wrongDivision : integer = 4 / "wrong"
+  "Wrong division" wrongDivision2 : integer = true / 4
+  "Wrong division" wrongDivision3 : integer = 4 / false
+  "Wrong division" wrongDivision4 : integer = wrongDefault6 / 4
+  "Wrong division" wrongDivision5 : integer = 4 / wrongDefault3
+
+  "Wrong complex expression" wrongComplex : integer = 1 + 2 * "wrong"
+  "Wrong complex expression" wrongComplex2 : integer = true + 2 * 3
+  "Wrong complex expression" wrongComplex3 : integer = 1 + 2 * false
+  "Wrong complex expression" wrongComplex4 : integer = wrongDefault6 + 2 * 4
+
+  "Wrong complex expression" wrongComplex5 : integer = (1 + 2) * "wrong"
+  "Wrong complex expression" wrongComplex6 : integer = (true + 2) * 3
+  "Wrong complex expression" wrongComplex7 : integer = (1 + 2) * false
+  "Wrong complex expression" wrongComplex8 : integer = (wrongDefault6 + 2) * 4
+  "Wrong complex expression" wrongComplex8 : integer =  (wrongDefault6 + (2 * 4)) * 4
+
+  "Wrong greater than" wrongGreaterThan : boolean = 1 > "wrong"
+  "Wrong smaller than" wrongSmallerThan : boolean = true < 1
+  "Wrong greater than or equal" wrongGreaterThanOrEqual : boolean = 1 >= false
+  "Wrong smaller than or equal" wrongSmallerThanOrEqual : boolean = wrongDefault6 <= 1
+
+  "Wrong string concatenation" wrongStringConcatenation : string = "wrong" + true
+
+  if (test) {
+    "Same name" sameName : boolean
+  }
+
+  if (2) {
+
+  }
+
+  if ("wrong") {
+
+  }
+
+  if (true && 1) {
+
+  }
+
+  if (1 || false) {
+
+  } else {
+    "Same name" sameName : boolean
+  }
+
+  if (true == 1) {
+
+  }
+
+  if (1 != false) {
+
+  } else {
+
+  }
+
+  if (1 == "wrong") {
+
+  }
+
+  if (1 != "wrong") {
+
+  } else {
+
+  }
+
+  if (false && "wrong") {
+
+  }
+
+  if ("wrong" || true) {
+
+  } else {
+
+  }
+
+  if (wrongComplex8 || true) {
+
+  } else {
+
+  }
+
+  if (1 + "wrong" == 1) {
+
+  }
+
+  if (true + 1 != 1) {
+
+  }
+
+  if (1 + false >= 1) {
+
+  }
+
+  if (wrongDefault6 + 1 <= 1) {
+
+  }
+
+  if (1 + wrongDefault3 > 1) {
+
+  }
+
+  if (2 - "wrong" != 1) {
+
+  } else {
+
+  }
+
+  if (true - 2 < 1) {
+
+  }
+
+  if (2 - false >= 1) {
+
+  }
+  
+  if (2 - 1) {
+
+  }
+
+  if (2 + 1) {
+
+  }
+
+  if (2 * 1) {
+
+  }
+
+  if (2 / 1) {
+
+  }
+
+  if ("wrong" + 1) {
+
+  }
+
+  if ((1 + "wrong") + 2) {
+
+  }
+
+  if ((1 + test) + 2 == 3) {
+
+  }
+
+}

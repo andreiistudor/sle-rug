@@ -1,3 +1,0 @@
-form allWrongExample {
-  "Enter a number" globalNumber: integer
-}

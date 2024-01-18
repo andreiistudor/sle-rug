@@ -107,18 +107,18 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
         msgs += { error("Declared type computed questions should match the type of the expression", id.src) };
       }
 
-      check(expr, tenv, useDef); // Check the expression
+      msgs += check(expr, tenv, useDef, typeOfByName(qType.name)); // Check the expression
     }
     case question(AExpr expr, list[AQuestion] ifQuestions):
     {
-      check(expr, tenv, useDef); // Check the expression
+      msgs += check(expr, tenv, useDef, tbool()); // Check the expression
       for(AQuestion qs <- ifQuestions) {
         msgs += check(qs, tenv, useDef); // Check each question in the if statement list
       }
     }
     case question(AExpr expr, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions):
     {
-      check(expr, tenv, useDef); // Check the expression
+      msgs += check(expr, tenv, useDef, tbool()); // Check the expression
       for(AQuestion qs <- ifQuestions) {
         msgs += check(qs, tenv, useDef); // Check each question in the if questions list
       }
@@ -134,29 +134,43 @@ set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
 // Check operand compatibility with operators.
 // E.g. for an addition node add(lhs, rhs), 
 //   the requirement is that typeOf(lhs) == typeOf(rhs) == tint()
-set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
+set[Message] check(AExpr e, TEnv tenv, UseDef useDef, Type returnType) {
   set[Message] msgs = {};
 
   switch (e) {
     case ref(AId x):
       msgs += { error("Undeclared question", x.src) | useDef[x.src] == {} };
     case ref(bool boolean):
-      // Do nothing here
-      boolean;
+      if (returnType != typeOfByName("boolean")) {
+        msgs += { error("This is not a boolean expression", e.src) };
+      }
     case ref(int integer):
-      // Do nothing here
-      integer;
+      if (returnType != typeOfByName("integer")) {
+        msgs += { error("This is not an integer expression", e.src) };
+      }
     case ref(str string):
-      // Do nothing here
-      string;
+      if (returnType != typeOfByName("string")) {
+        msgs += { error("This is not a string expression", e.src) };
+      }
     case ref(AExpr left, str operation, AExpr right):
     {
+      Type exprType = typeOf(e, tenv, useDef);
+      if (exprType != returnType) {
+        msgs += { error("Incorrect type for expression", e.src) };
+      }
       // Check operand compatibility for binary expressions
       Type leftType = typeOf(left, tenv, useDef);
       Type rightType = typeOf(right, tenv, useDef);
 
       // Check operation compatibility for binary expressions
-      if (operation == "+" || operation == "-" || operation == "*" || operation == "/" || operation == "\<" || operation == "\>" || operation == "\<=" || operation == "\>=") {
+      if (operation == "+") {
+        if (leftType != tstr() && leftType != tint()) {
+          msgs += { error("Incompatible types for operation", e.src) };
+        }
+        if (rightType != tstr() && rightType != tint()) {
+          msgs += { error("Incompatible types for operation", e.src) };
+        }
+      } else if (operation == "-" || operation == "*" || operation == "/" || operation == "\<" || operation == "\>" || operation == "\<=" || operation == "\>=") {
         if (leftType != tint() || rightType != tint()) {
           msgs += { error("Incompatible types for operation", e.src) };
         }
@@ -164,15 +178,21 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef) {
         if (leftType != tbool() || rightType != tbool()) {
           msgs += { error("Incompatible types for operation", e.src) };
         }
-      } else if (leftType == tstr() || rightType == tstr() || (leftType != rightType)) {
+      } else if (leftType != rightType) {
         msgs += { error("Incompatible types for operation", e.src) };
       }
     }
     case ref(AExpr expr, bool negated):
     {
       Type exprType = typeOf(expr, tenv, useDef);
-      if (exprType != tbool()) {
-        msgs += { error("Incompatible types for operation", e.src) };
+      if (negated) {
+        if (exprType != typeOfByName("boolean")) {
+          msgs += { error("This is not a boolean expression", e.src) };
+        }
+      } else {
+        if (exprType != returnType) {
+          msgs += { error("Incorrect type for expression", e.src) };
+      }
       }
     }
   }
@@ -184,10 +204,7 @@ Type typeOf(AExpr e, TEnv tenv, UseDef useDef) {
   switch (e) {
     case ref(id(_, src = loc u)):
     {
-      // if (!(name in encounteredIds)) {
-      //   return tunknown();
-      // }
-      if (<u, loc d> <- useDef, <d, x, _, Type t> <- tenv) {
+      if (<u, loc d> <- useDef, <d, _, _, Type t> <- tenv) {
         return t;
       }
     }
