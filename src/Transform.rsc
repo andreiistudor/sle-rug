@@ -46,7 +46,7 @@ list[AQuestion] flattenQuestions(list[AQuestion] questions, AExpr parentConditio
             }
             case question(AExpr cond, list[AQuestion] ifQuestions, list[AQuestion] elseQuestions): {
                 flattenedQuestions += flattenQuestions(ifQuestions, combineConditions(parentCondition, cond));
-                flattenedQuestions += flattenQuestions(elseQuestions, parentCondition);
+                flattenedQuestions += flattenQuestions(elseQuestions, combineConditions(parentCondition, not(cond)));
             }
             default: {
                 list[AQuestion] questionAux = [q];
@@ -57,20 +57,17 @@ list[AQuestion] flattenQuestions(list[AQuestion] questions, AExpr parentConditio
     return flattenedQuestions;
 }
 
+AExpr not(AExpr cond) {
+    return ref(ref(cond, false), true);
+}
+
 AExpr combineConditions(AExpr cond1, AExpr cond2) {
-    // if (isTrueExpr(cond1)) {
-        // return cond2;
-    // } else if (isTrueExpr(cond2)) {
-        // return cond1;
-    // } else {
-        return ref(cond1, "&&", cond2);
-    // }
+    return ref(cond1, "&&", cond2);
 }
 
 AExpr trueExpr() {
     return ref(true);
 }
-
 
 bool isTrueExpr(AExpr expr) {
     bool result = false;

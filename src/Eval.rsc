@@ -36,8 +36,8 @@ VEnv initialEnv(AForm f) {
   visit(f) {
     case question(_, AId identifier, AType qType):
       venv[identifier.name] = defaultValue(qType.name);
-    case question(_, AId identifier, _, AExpr expr):
-      venv[identifier.name] = eval(expr, venv);
+    case question(_, AId identifier, AType qType, AExpr expr):
+      venv[identifier.name] = defaultValue(qType.name); //eval(expr, venv);
   }
 
   return venv;
