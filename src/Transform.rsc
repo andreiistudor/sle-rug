@@ -3,6 +3,9 @@ module Transform
 import Syntax;
 import Resolve;
 import AST;
+import IO;
+
+import ParseTree;
 
 /* 
  * Transforming QL forms
@@ -88,9 +91,33 @@ bool isTrueExpr(AExpr expr) {
  */
  
 start[Form] rename(start[Form] f, loc useOrDef, str newName, UseDef useDef) {
-   return f; 
+    set[loc] locations = {};
+    if (useOrDef in useDef<1>) {
+        locations += useOrDef;
+        for (<loc l, useOrDef> <- useDef) {
+            locations += l;
+        }
+    } else if (useOrDef in useDef<0>) {
+        locations += useOrDef;
+        for (<useOrDef, loc l> <- useDef) {
+            locations += l;
+        }
+    }
+
+    if (locations == {}) {
+        return f;
+    }
+    
+    return visit(f) {
+        case Identifier id => replaceName(id, locations, newName)
+    }
 } 
  
- 
- 
+Identifier replaceName(Identifier id, set[loc] locations, str newName) {
+    if (id.src in locations) {
+        return [Identifier]newName;
+    } else {
+        return id;
+    }
+}
 

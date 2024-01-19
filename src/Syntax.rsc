@@ -7,8 +7,8 @@ start syntax Form
   = "form" Id name "{" Question* questions "}"; 
 
 syntax Question
-  = "\"" Str question "\"" Id identifier ":" Type qType
-  | "\"" Str question "\"" Id identifier ":" Type qType "=" Expr defaultValue
+  = "\"" Str question "\"" Identifier identifier ":" Type qType
+  | "\"" Str question "\"" Identifier identifier ":" Type qType "=" Expr defaultValue
   | "if" "(" Expr condition ")" "{" Question* questions "}"
   | "if" "(" Expr condition ")" "{" Question* questions "}" "else" "{" Question* questions "}"
   ;

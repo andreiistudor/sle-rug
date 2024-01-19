@@ -25,9 +25,9 @@ AForm cst2ast(start[Form] sf) {
 
 default AQuestion cst2ast(Question q) {
   switch (q) {  
-    case (Question)`"<Str text>" <Id identifier> : <Type qType>`:
+    case (Question)`"<Str text>" <Identifier identifier> : <Type qType>`:
       return question("<text>", id("<identifier>", src=identifier.src), cst2ast(qType), src=q.src);    
-    case (Question)`"<Str text>" <Id identifier> : <Type qType> = <Expr qExpr>`:
+    case (Question)`"<Str text>" <Identifier identifier> : <Type qType> = <Expr qExpr>`:
       return question("<text>", id("<identifier>", src=identifier.src), cst2ast(qType), cst2ast(qExpr), src=q.src);
     case (Question)`if (<Expr condition>) { <Question* questions> }`:
       return question(cst2ast(condition), [ cst2ast(qs) | Question qs <- questions ], src=q.src);

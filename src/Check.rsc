@@ -142,15 +142,15 @@ set[Message] check(AExpr e, TEnv tenv, UseDef useDef, Type returnType) {
       msgs += { error("Undeclared question", x.src) | useDef[x.src] == {} };
     case ref(bool boolean):
       if (returnType != typeOfByName("boolean")) {
-        msgs += { error("This is not a boolean expression", e.src) };
+        msgs += { error("Incorrect type for expression", e.src) };
       }
     case ref(int integer):
       if (returnType != typeOfByName("integer")) {
-        msgs += { error("This is not an integer expression", e.src) };
+        msgs += { error("Incorrect type for expression", e.src) };
       }
     case ref(str string):
       if (returnType != typeOfByName("string")) {
-        msgs += { error("This is not a string expression", e.src) };
+        msgs += { error("Incorrect type for expression", e.src) };
       }
     case ref(AExpr left, str operation, AExpr right):
     {
